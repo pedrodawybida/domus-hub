@@ -24,9 +24,9 @@ const config: Config = {
         },
         // Domus Design System v2 (tokens semânticos)
         domus: {
-          50: "#eef1f8",
+          50: "var(--ds-brand-soft)",
           100: "#dce2f0",
-          600: "#283970", // cor oficial da logo
+          600: "var(--ds-brand)",
           700: "#1f2d5c",
           900: "#0b1536",
           950: "#060b1e",
@@ -40,8 +40,8 @@ const config: Config = {
         warning: { 600: "#b54708" },
       },
       fontFamily: {
-        sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
-        serif: ["Source Serif 4", "Georgia", "Times New Roman", "serif"],
+        sans: ["var(--ds-body)"],
+        serif: ["var(--ds-display)"],
       },
       fontSize: {
         // Escala 1.25 (major third) — mínimo 12px. Prefixo ds- para não alterar classes padrão já usadas.
@@ -55,15 +55,15 @@ const config: Config = {
         "ds-4xl": ["56px", { lineHeight: "60px" }],
       },
       borderRadius: {
-        "ds-sm": "6px",
-        "ds-md": "10px",
-        "ds-lg": "16px",
-        "ds-xl": "24px",
+        "ds-sm": "var(--ds-radius-sm)",
+        "ds-md": "var(--ds-radius-md)",
+        "ds-lg": "var(--ds-radius-lg)",
+        "ds-xl": "var(--ds-radius-xl)",
       },
       boxShadow: {
-        "ds-1": "0 1px 2px rgba(15, 23, 42, 0.06)",
-        "ds-2": "0 6px 20px rgba(15, 23, 42, 0.06)",
-        "ds-3": "0 18px 44px rgba(11, 21, 54, 0.16)",
+        "ds-1": "var(--ds-shadow-soft)",
+        "ds-2": "0 6px 20px rgb(15 23 42 / 6%)",
+        "ds-3": "var(--ds-shadow-card)",
       },
     },
   },
