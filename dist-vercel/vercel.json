@@ -1,19 +1,4 @@
 {
   "version": 2,
-  "cleanUrls": true,
-  "rewrites": [
-    {
-      "source": "/apresentacoes/:path*",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/apresentacoes",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/login",
-      "destination": "/index.html"
-    }
-  ]
+  "routes": [{ "src": "/(.*)", "status": 403 }]
 }
-
