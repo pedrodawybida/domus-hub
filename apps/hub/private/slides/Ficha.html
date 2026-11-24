@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Domus Ficha</title><style>
+@font-face {font-family:Inter;src:url("/brand/inter-latin.woff2") format("woff2");font-weight:100 900;}
+    :root {
+      --domus-navy-950: #060b1e;
+      --domus-navy-900: #0b1536;
+      --domus-navy-800: #132252;
+      --domus-blue: #283970;
+      --domus-blue-light: #3b5299;
+      --domus-teal: #10b981;
+      --domus-cyan: #06b6d4;
+      --domus-slate-50: #f8fafc;
+      --domus-slate-100: #f1f5f9;
+      --domus-slate-200: #e2e8f0;
+      --domus-slate-300: #cbd5e1;
+      --domus-slate-500: #64748b;
+      --domus-slate-600: #475569;
+      --domus-slate-800: #1e293b;
+      --domus-slate-900: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--ds-font-sans);
+      background: var(--domus-navy-950);
+      color: #ffffff;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    button, input, select {
+      font-family: inherit;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ==================== UTILITÁRIOS DE LOGO ==================== */
+    .domus-logo-svg {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    /* ==================== TELA 1: LOGIN MINIMALISTA DOMUS ==================== */
+    .login-screen {
+      min-height: 100vh;
+      background: radial-gradient(circle at 75% 15%, rgba(40, 57, 112, 0.35), transparent 45%),
+                  radial-gradient(circle at 20% 85%, rgba(16, 185, 129, 0.08), transparent 40%),
+                  linear-gradient(160deg, #05091a 0%, #0b1536 60%, #070e26 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 440px;
+      background: rgba(15, 25, 62, 0.75);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 36px 32px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+      margin-top: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(6, 11, 30, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: #ffffff;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--domus-teal);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 13px 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--domus-blue);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      background: var(--domus-blue-light);
+      transform: translateY(-1px);
+    }
+
+    .btn-teal {
+      width: 100%;
+      padding: 13px 20px;
+      border-radius: 10px;
+      border: none;
+      background: var(--domus-teal);
+      color: #051329;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-teal:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    /* ==================== TELA 2: HUB DO CONSULTOR DOMUS ==================== */
+    .hub-screen {
+      min-height: 100vh;
+      background: radial-gradient(circle at 80% 10%, rgba(40, 57, 112, 0.35), transparent 50%),
+                  linear-gradient(180deg, #060b1e 0%, #0b1536 55%, #060b1e 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .top-navbar {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(6, 11, 30, 0.8);
+      backdrop-filter: blur(12px);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hub-main {
+      max-width: 1180px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 48px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hub-grid-5 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
+      gap: 16px;
+      width: 100%;
+      margin-top: 36px;
+    }
+
+    .hub-card {
+      background: rgba(15, 27, 66, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: left;
+      transition: all 0.2s;
+    }
+
+    .hub-card:hover {
+      border-color: rgba(16, 185, 129, 0.5);
+      background: rgba(19, 34, 82, 0.8);
+      transform: translateY(-2px);
+    }
+
+    .hub-card.featured {
+      background: linear-gradient(180deg, rgba(40, 57, 112, 0.55) 0%, rgba(15, 27, 66, 0.85) 100%);
+      border: 1.5px solid var(--domus-teal);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    }
+
+    .hub-icon-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--domus-teal);
+    }
+
+    /* ==================== TELA 3: CENTRAL DE APRESENTAÇÕES DOMUS ==================== */
+    .light-screen {
+      min-height: 100vh;
+      background: var(--domus-slate-50);
+      color: var(--domus-slate-900);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .light-header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--domus-slate-200);
+      padding: 14px 28px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .light-header-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-back-light {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--domus-blue);
+      cursor: pointer;
+    }
+
+    .btn-back-light:hover {
+      color: var(--domus-navy-900);
+    }
+
+    .central-container {
+      max-width: 1060px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 48px 20px 72px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .roteiro-banner {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid var(--domus-slate-200);
+      border-left: 4px solid var(--domus-blue);
+      border-radius: 14px;
+      padding: 22px 26px;
+      margin-top: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+      flex-wrap: wrap;
+    }
+
+    .cards-3-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 22px;
+      width: 100%;
+      margin-top: 28px;
+    }
+
+    .pres-card {
+      background: #ffffff;
+      border: 1px solid var(--domus-slate-200);
+      border-radius: 16px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .pres-card.active-card {
+      border: 1.5px solid var(--domus-blue);
+      box-shadow: 0 12px 32px rgba(40, 57, 112, 0.08);
+    }
+
+    .check-list {
+      list-style: none;
+      background: var(--domus-slate-50);
+      border: 1px solid var(--domus-slate-200);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin: 18px 0 24px;
+      text-align: left;
+      font-size: 12px;
+      color: var(--domus-slate-600);
+    }
+
+    .check-list li {
+      padding: 5px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ==================== DOMUS FICHA ==================== */
+    .ficha-shell { max-width: 960px; width: 100%; margin: 0 auto; padding: 34px 20px 72px; }
+    .ficha-intro { padding: 28px; border: 1px solid var(--domus-slate-200); border-radius: 18px; background: linear-gradient(135deg, #fff, #f7f8fc); box-shadow: 0 8px 28px rgba(15,23,42,.05); }
+    .ficha-eyebrow { color: var(--domus-teal-dark, #047857); font-size: 10px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+    .ficha-intro h1 { margin-top: 8px; font: 600 clamp(28px, 4vw, 38px)/1.12 var(--ds-font-serif); color: var(--domus-slate-900); }
+    .ficha-intro p { max-width: 740px; margin-top: 10px; color: var(--domus-slate-600); font-size: 14px; line-height: 1.65; }
+    .ficha-section { margin-top: 20px; padding: 24px; border: 1px solid var(--domus-slate-200); border-radius: 16px; background: #fff; box-shadow: 0 4px 16px rgba(15,23,42,.03); }
+    .ficha-section-heading { margin-bottom: 18px; }
+    .ficha-section-heading h2 { color: var(--domus-slate-900); font-size: 17px; font-weight: 800; }
+    .ficha-section-heading p { margin-top: 4px; color: var(--domus-slate-500); font-size: 12px; line-height: 1.55; }
+    .ficha-subheading { margin: 20px 0 12px; color: var(--domus-blue); font-size: 12px; font-weight: 800; }
+    .ficha-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+    .ficha-field { display: flex; min-width: 0; flex-direction: column; gap: 6px; }
+    .ficha-field label, .ficha-field-label { color: var(--domus-slate-700, #334155); font-size: 12px; font-weight: 700; }
+    .ficha-field input, .ficha-field select { width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--domus-slate-300); border-radius: 9px; background: #fff; color: var(--domus-slate-900); font: inherit; font-size: 13px; outline: none; }
+    .ficha-field input:focus, .ficha-field select:focus { border-color: var(--domus-blue); box-shadow: 0 0 0 3px rgba(40,57,112,.12); }
+    .ficha-field input::placeholder { color: #9aa3b2; }
+    .ficha-wide { grid-column: 1 / -1; }
+    .ficha-options { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 11px; }
+    .ficha-chip { position: relative; display: inline-flex; }
+    .ficha-chip input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .ficha-chip span { display: inline-flex; min-height: 38px; align-items: center; padding: 0 13px; border: 1px solid var(--domus-slate-300); border-radius: 999px; color: var(--domus-slate-700, #334155); background: #fff; font-size: 12px; font-weight: 600; cursor: pointer; transition: .15s ease; }
+    .ficha-chip input:checked + span { border-color: var(--domus-blue); background: #eef2ff; color: var(--domus-blue); box-shadow: inset 0 0 0 1px var(--domus-blue); }
+    .ficha-chip input:focus-visible + span { outline: 3px solid rgba(40,57,112,.25); outline-offset: 2px; }
+    .ficha-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+    .ficha-message { display: none; margin-top: 16px; padding: 14px 16px; border: 1px solid #a7f3d0; border-radius: 12px; background: #ecfdf5; color: #065f46; font-size: 13px; line-height: 1.5; }
+    .ficha-message.visible { display: block; }
+    .ficha-message button { margin-left: 8px; color: #065f46; font-weight: 800; text-decoration: underline; background: none; border: 0; cursor: pointer; }
+    @media (max-width: 600px) { .ficha-grid { grid-template-columns: 1fr; } .ficha-wide { grid-column: auto; } .ficha-section, .ficha-intro { padding: 20px; } .ficha-actions { flex-direction: column-reverse; } .ficha-actions button { width: 100%; } }
+    @media print { body * { visibility: hidden !important; } #screen-ficha, #screen-ficha * { visibility: visible !important; } #screen-ficha { position: absolute; inset: 0; min-height: auto; } #screen-ficha .light-header, #screen-ficha .ficha-actions, #screen-ficha .ficha-message { display: none !important; } .ficha-shell { max-width: none; padding: 0; } .ficha-section, .ficha-intro { box-shadow: none; break-inside: avoid; } }
+</style></head><body><svg style="display:none;">
+    <symbol id="domus-logo-symbol" viewBox="0 0 1417.53 1373.55">
+      <path fill="currentColor" d="M398.44,477.45h-52.36v568.55h52.36c19.41,0,35.16-15.75,35.16-35.16v-498.24c0-19.42-15.75-35.15-35.16-35.15ZM400.78,1004.27c0,4.12-3.34,7.47-7.47,7.47h-15.95v-499.98h15.95c4.13,0,7.47,3.34,7.47,7.47v485.04Z"/>
+      <path fill="currentColor" d="M543.86,477.45h-17.21c-19.42,0-35.16,15.73-35.16,35.15v498.24c0,19.41,15.74,35.16,35.16,35.16h17.21c19.41,0,35.15-15.75,35.15-35.16v-498.24c0-19.42-15.74-35.15-35.15-35.15ZM546.96,1004.27c0,4.12-3.34,7.47-7.47,7.47h-8.47c-4.13,0-7.48-3.35-7.48-7.47v-485.04c0-4.13,3.35-7.47,7.48-7.47h8.47c4.13,0,7.47,3.34,7.47,7.47v485.04Z"/>
+      <path fill="currentColor" d="M778.73,477.45v568.55h-32.09V511.76h-15.94c-4.13,0-7.47,3.34-7.47,7.47v526.77h-29.9v-526.77c0-4.13-3.34-7.47-7.47-7.47h-15.94v534.24h-32.11V477.45h42.78c10.46,0,20.08,3.59,27.69,9.6,7.61-6.01,17.23-9.6,27.68-9.6h42.78Z"/>
+      <path fill="currentColor" d="M921.91,477.45v533.39c0,19.42-15.74,35.16-35.16,35.16h-17.21c-19.42,0-35.16-15.74-35.16-35.16V477.45h32.05v526.79c0,4.12,3.35,7.47,7.47,7.47h8.47c4.12,0,7.47-3.35,7.47-7.47V477.45h32.05Z"/>
+      <path fill="currentColor" d="M1035.27,616.4v-97.14c0-4.12-3.34-7.47-7.47-7.47h-8.47c-4.12,0-7.47,3.35-7.47,7.47v156.87c0,4.12,3.34,7.47,7.47,7.47h12.84c7.49,0,35.15,4.6,35.15,54.34v272.9c0,19.42-15.74,35.16-35.16,35.16h-17.21c-19.42,0-35.16-15.74-35.16-35.16v-206.92h32.05v200.35c0,4.12,3.35,7.47,7.47,7.47h8.47c4.12,0,7.47-3.35,7.47-7.47v-274.39c0-8-4.87-14.6-11.93-14.6h-8.38c-19.42,0-35.15-15.74-35.15-35.16v-167.49c0-19.42,15.73-35.16,35.15-35.16h17.21c19.42,0,35.16,15.74,35.16,35.16v103.79h-32.05Z"/>
+      <path fill="currentColor" d="M70.9,359.27c-4.31,0-8.3-2.81-9.58-7.16-1.57-5.3,1.45-10.86,6.75-12.43l640.2-189.74,641.2,189.73c5.29,1.57,8.32,7.13,6.75,12.43-1.57,5.29-7.13,8.32-12.43,6.75l-635.52-188.05L73.75,358.85c-.95.28-1.91.42-2.85.42Z"/>
+      <path fill="currentColor" d="M1336.58,1143.28h-63.24v-40.27c0-11.05-8.99-20.04-20.04-20.04h-46.89V419.48h102.28c14.34,0,26,11.66,26,26s-11.66,26-26,26-26-11.66-26-26c0-5.52-4.48-10-10-10s-10,4.48-10,10c0,25.36,20.64,46,46,46s46-20.64,46-46-20.64-46-46-46H109.75c-25.36,0-46,20.64-46,46s20.64,46,46,46,46-20.64,46-46c0-5.52-4.48-10-10-10s-10,4.48-10,10c0,14.34-11.66,26-26,26s-26-11.66-26-26,11.66-26,26-26h100.38v663.49h-45.89c-11.06,0-20.05,8.99-20.05,20.04v40.27h-63.24c-11.05,0-20.04,8.99-20.04,20.05v40.22c0,11.06,8.99,20.05,20.04,20.05h1255.63c11.06,0,20.05-8.99,20.05-20.05v-40.22c0-11.06-8.99-20.05-20.05-20.05ZM1147.41,419.48h39v663.49h-39V419.48ZM289.13,419.48h838.28v663.49H289.13V419.48ZM230.13,419.48h39v663.49h-39V419.48ZM164.24,1102.97l1089.1.02v.02l-.04,40.27-1089.11-.04.05-40.27ZM1336.63,1163.33l-.05,40.27-1255.67-.05.04-40.27h83.29l1172.39.03v.02Z"/>
+    </symbol>
+  </svg>
+  <div id="screen-ficha" class="light-screen">
+    <header class="light-header">
+      <div class="light-header-inner">
+        <button class="btn-back-light" type="button" onclick="location.href='/apresentacoes'">← Voltar à Central</button>
+        <div style="display:flex; align-items:center; gap:10px; color:var(--domus-blue); font-size:12px; font-weight:800; letter-spacing:.06em;">
+          <svg class="domus-logo-svg" width="22" height="22"><use href="#domus-logo-symbol"></use></svg>
+          DOMUS FICHA
+        </div>
+      </div>
+    </header>
+
+    <main class="ficha-shell">
+      <div class="ficha-intro">
+        <span class="ficha-eyebrow">Cadastro consultivo Domus</span>
+        <h1>Ficha do Cliente</h1>
+        <p>A Domus Ficha reúne, em um só lugar, os dados essenciais do cliente e os critérios para a busca imobiliária. Ela ajuda o consultor a entender o contexto, registrar preferências e conduzir uma seleção de imóveis alinhada ao que a pessoa realmente precisa.</p>
+      </div>
+
+      <form id="domus-ficha-form">
+        <section class="ficha-section" aria-labelledby="ficha-dados-title">
+          <div class="ficha-section-heading">
+            <h2 id="ficha-dados-title">2. Dados do Cliente</h2>
+            <p>Informações pessoais e financeiras para contextualizar o atendimento.</p>
+          </div>
+          <div class="ficha-grid">
+            <div class="ficha-field ficha-wide"><label for="ficha-nome">Nome completo</label><input id="ficha-nome" name="nome" autocomplete="name" placeholder="Nome e sobrenome" required /></div>
+            <div class="ficha-field"><label for="ficha-nascimento">Nascimento</label><input id="ficha-nascimento" name="nascimento" type="date" autocomplete="bday" /></div>
+            <div class="ficha-field"><label for="ficha-cpf">CPF</label><input id="ficha-cpf" name="cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" autocomplete="off" /></div>
+            <div class="ficha-field"><label for="ficha-renda">Renda mensal</label><input id="ficha-renda" name="renda" inputmode="decimal" placeholder="R$ 0,00" /></div>
+            <div class="ficha-field"><label for="ficha-celular">Celular</label><input id="ficha-celular" name="celular" type="tel" inputmode="tel" maxlength="15" placeholder="(00) 00000-0000" autocomplete="tel" /></div>
+            <div class="ficha-field ficha-wide"><label for="ficha-email">E-mail</label><input id="ficha-email" name="email" type="email" placeholder="exemplo@email.com" autocomplete="email" /></div>
+          </div>
+        </section>
+
+        <section class="ficha-section" aria-labelledby="ficha-busca-title">
+          <div class="ficha-section-heading">
+            <h2 id="ficha-busca-title">3. Filtros de Pesquisa Imobiliária</h2>
+            <p>Características do imóvel desejado para direcionar a pesquisa.</p>
+          </div>
+          <h3 class="ficha-subheading">Localização e finalidade</h3>
+          <div class="ficha-grid">
+            <div class="ficha-field"><label for="ficha-finalidade">Finalidade</label><select id="ficha-finalidade" name="finalidade"><option>Compra</option><option>Locação</option><option>Investimento</option></select></div>
+            <div class="ficha-field"><label for="ficha-tipo">Tipo de imóvel</label><select id="ficha-tipo" name="tipo"><option>Apartamento</option><option>Casa</option><option>Sobrado</option><option>Terreno</option><option>Sala comercial</option><option>Imóvel rural</option><option>Outro</option></select></div>
+            <div class="ficha-field"><label for="ficha-cidade">Cidade</label><select id="ficha-cidade" name="cidade"><option>Curitiba</option><option>São José dos Pinhais</option><option>Pinhais</option><option>Colombo</option><option>Araucária</option><option>Outra</option></select></div>
+            <div class="ficha-field"><label for="ficha-bairro">Bairro</label><input id="ficha-bairro" name="bairro" placeholder="Digite o bairro desejado" /></div>
+          </div>
+
+          <h3 class="ficha-subheading">Valores e metragem</h3>
+          <div class="ficha-grid">
+            <div class="ficha-field"><label for="ficha-preco-min">Preço mínimo</label><input id="ficha-preco-min" name="precoMin" inputmode="decimal" placeholder="R$ 0,00" /></div>
+            <div class="ficha-field"><label for="ficha-preco-max">Preço máximo</label><input id="ficha-preco-max" name="precoMax" inputmode="decimal" placeholder="R$ 0,00" /></div>
+            <div class="ficha-field"><label for="ficha-area-min">Área mínima (m²)</label><input id="ficha-area-min" name="areaMin" type="number" min="0" placeholder="Ex.: 60" /></div>
+            <div class="ficha-field"><label for="ficha-area-max">Área máxima (m²)</label><input id="ficha-area-max" name="areaMax" type="number" min="0" placeholder="Ex.: 120" /></div>
+            <div class="ficha-field"><label for="ficha-condominio">Condomínio máximo</label><input id="ficha-condominio" name="condominioMax" inputmode="decimal" placeholder="R$ 0,00" /></div>
+            <div class="ficha-field"><label for="ficha-iptu">IPTU máximo</label><input id="ficha-iptu" name="iptuMax" inputmode="decimal" placeholder="R$ 0,00" /></div>
+          </div>
+
+          <h3 class="ficha-subheading">Características do imóvel</h3>
+          <div class="ficha-grid">
+            <div class="ficha-field"><label for="ficha-quartos">Quartos</label><select id="ficha-quartos" name="quartos"><option>Indiferente</option><option>1+</option><option>2+</option><option>3+</option><option>4+</option></select></div>
+            <div class="ficha-field"><label for="ficha-banheiros">Banheiros</label><select id="ficha-banheiros" name="banheiros"><option>Indiferente</option><option>1+</option><option>2+</option><option>3+</option><option>4+</option></select></div>
+            <div class="ficha-field"><label for="ficha-suites">Suítes</label><select id="ficha-suites" name="suites"><option>Indiferente</option><option>1+</option><option>2+</option><option>3+</option></select></div>
+            <div class="ficha-field"><label for="ficha-vagas">Vagas</label><select id="ficha-vagas" name="vagas"><option>Indiferente</option><option>1+</option><option>2+</option><option>3+</option></select></div>
+            <div class="ficha-field"><label for="ficha-mobiliado">Mobiliado</label><select id="ficha-mobiliado" name="mobiliado"><option>Indiferente</option><option>Sim</option><option>Não</option></select></div>
+            <div class="ficha-field"><label for="ficha-pets">Aceita pets</label><select id="ficha-pets" name="pets"><option>Indiferente</option><option>Sim</option><option>Não</option></select></div>
+            <div class="ficha-field"><label for="ficha-andar">Andar mínimo</label><input id="ficha-andar" name="andarMin" type="number" min="0" placeholder="Ex.: 2" /></div>
+          </div>
+
+          <h3 class="ficha-subheading">Publicação e ordenação</h3>
+          <div class="ficha-grid">
+            <div class="ficha-field"><label for="ficha-publicado">Publicado por</label><select id="ficha-publicado" name="publicadoPor"><option>Todos</option><option>Imobiliária</option><option>Proprietário</option><option>Construtora</option></select></div>
+            <div class="ficha-field"><label for="ficha-ordenar">Ordenar por</label><select id="ficha-ordenar" name="ordenarPor"><option>Relevância</option><option>Menor preço</option><option>Maior preço</option><option>Maior área</option><option>Mais recentes</option></select></div>
+          </div>
+        </section>
+
+        <section class="ficha-section" aria-labelledby="ficha-comodidades-title">
+          <div class="ficha-section-heading">
+            <h2 id="ficha-comodidades-title">4. Comodidades do Condomínio</h2>
+            <p>Selecione todas as comodidades importantes para o cliente.</p>
+          </div>
+          <div class="ficha-options" role="group" aria-label="Comodidades desejadas">
+            <label class="ficha-chip"><input type="checkbox" name="comodidades" value="Piscina"><span>Piscina</span></label>
+            <label class="ficha-chip"><input type="checkbox" name="comodidades" value="Churrasqueira"><span>Churrasqueira</span></label>
+            <label class="ficha-chip"><input type="checkbox" name="comodidades" value="Academia"><span>Academia</span></label>
+            <label class="ficha-chip"><input type="checkbox" name="comodidades" value="Playground"><span>Playground</span></label>
+            <label class="ficha-chip"><input type="checkbox" name="comodidades" value="Salão de festas"><span>Salão de festas</span></label>
+            <label class="ficha-chip"><input type="checkbox" name="comodidades" value="Jardim / Área verde"><span>Jardim / Área verde</span></label>
+            <label class="ficha-chip"><input type="checkbox" name="comodidades" value="Portaria 24h"><span>Portaria 24h</span></label>
+            <label class="ficha-chip"><input type="checkbox" name="comodidades" value="Elevador"><span>Elevador</span></label>
+          </div>
+        </section>
+
+        <div id="ficha-success" class="ficha-message" role="status" aria-live="polite"></div>
+        <div class="ficha-actions">
+          <button class="btn-back-light" type="button" onclick="location.href='/apresentacoes'">Cancelar</button>
+          <button class="btn-primary" type="submit">Criar ficha do cliente →</button>
+        </div>
+      </form>
+    </main>
+  </div>
+<script>
+    function parseFichaMoney(value) {
+      const normalized = String(value || "").trim().replace(/[^0-9,.-]/g, "");
+      if (!normalized) return 0;
+      if (normalized.includes(",")) return Number(normalized.replace(/\./g, "").replace(",", ".")) || 0;
+      return Number(normalized.replace(/\.(?=\d{3}(?:\D|$))/g, "")) || 0;
+    }
+    function maskFichaCpf(input) {
+      const digits = input.value.replace(/\D/g, "").slice(0, 11);
+      input.value = digits
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d)/, "$1.$2")
+        .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    }
+
+    function maskFichaPhone(input) {
+      const digits = input.value.replace(/\D/g, "").slice(0, 11);
+      input.value = digits
+        .replace(/^(\d{2})(\d)/, "($1) $2")
+        .replace(/(\d{5})(\d{1,4})$/, "$1-$2");
+    }
+
+    function formatFichaMoney(input) {
+      const digits = input.value.replace(/\D/g, "");
+      if (!digits) { input.value = ""; return; }
+      input.value = (Number(digits) / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    document.getElementById("ficha-cpf").addEventListener("input", event => maskFichaCpf(event.target));
+    document.getElementById("ficha-celular").addEventListener("input", event => maskFichaPhone(event.target));
+    ["ficha-renda", "ficha-preco-min", "ficha-preco-max", "ficha-condominio", "ficha-iptu"].forEach(id => {
+      document.getElementById(id).addEventListener("blur", event => formatFichaMoney(event.target));
+    });
+    document.getElementById("domus-ficha-form").addEventListener("submit", event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const areaMin = Number(form.elements.areaMin.value || 0);
+      const areaMax = Number(form.elements.areaMax.value || 0);
+      if (areaMin && areaMax && areaMin > areaMax) {
+        form.elements.areaMax.setCustomValidity("A área máxima deve ser maior ou igual à área mínima.");
+        form.elements.areaMax.reportValidity();
+        return;
+      }
+      form.elements.areaMax.setCustomValidity("");
+      const name = form.elements.nome.value.trim();
+      const amenities = [...form.querySelectorAll('input[name="comodidades"]:checked')].map(input => input.value);
+      const clientPresentation = {
+        name,
+        city: form.elements.cidade.value,
+        budgetMin: parseFichaMoney(form.elements.precoMin.value),
+        budgetMax: parseFichaMoney(form.elements.precoMax.value)
+      };
+      try {
+        sessionStorage.setItem("domus-client-presentation", JSON.stringify(clientPresentation));
+      } catch (error) {
+        console.warn("Não foi possível guardar os dados de personalização nesta sessão.", error);
+      }
+      const result = document.getElementById("ficha-success");
+      result.replaceChildren();
+      const message = document.createElement("span");
+      message.textContent = `Ficha de ${name} criada nesta sessão${amenities.length ? `, com ${amenities.length} comodidade(s) selecionada(s)` : ""}. Nome, cidade e faixa de investimento ficam temporariamente nesta sessão para personalizar a apresentação; não são enviados a terceiros nem guardados em uma conta.`;
+      const printButton = document.createElement("button");
+      printButton.type = "button";
+      printButton.textContent = "Imprimir ficha";
+      printButton.addEventListener("click", () => window.print());
+      result.append(message, printButton);
+      result.classList.add("visible");
+      result.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+</script></body></html>

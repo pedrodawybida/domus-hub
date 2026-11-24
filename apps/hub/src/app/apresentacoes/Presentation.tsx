@@ -99,6 +99,18 @@ export default function CentralApresentacoesPage() {
 
         {/* 3 Main Presentation Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-8">
+          {[
+            { title: "Domus Ficha • Perfil do Cliente", description: "Organize o contato, a renda e as preferências de imóvel antes da apresentação.", label: "Criar ficha do cliente", file: "Ficha", icon: FileCheck },
+            { title: "Simulador de Financiamento & Crédito", description: "Compare SAC e PRICE, consulte a pré-análise de crédito e simule um cenário MCMV.", label: "Abrir simulador de financiamento", file: "Simulador", icon: TrendingUp },
+          ].map(({ title, description, label, file, icon: Icon }) => (
+            <article key={file} className="flex flex-col items-center gap-4 rounded-2xl border border-slate-200 bg-white p-7 text-center">
+              <Icon aria-hidden="true" className="h-7 w-7 text-[#283970]" />
+              <h2 className="text-xl font-bold">{title}</h2>
+              <p className="text-sm text-slate-600">{description}</p>
+              <a className="mt-auto w-full rounded-xl bg-[#283970] px-4 py-3 font-bold text-white" href={`/slides/${file}.html`}>{label}</a>
+            </article>
+          ))}
+
           {/* Card 1: 1ª Reunião Domus */}
           <div className="bg-white rounded-2xl border-2 border-[#283970] shadow-lg p-6 flex flex-col justify-between relative">
             <span className="absolute -top-3 right-4 px-3 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#283970] text-white shadow">
