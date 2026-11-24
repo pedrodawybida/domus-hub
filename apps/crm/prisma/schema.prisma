@@ -1,0 +1,251 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Equipe {
+  id        String   @id @default(uuid())
+  nome      String
+  criado_em DateTime @default(now())
+  users     User[]
+
+  @@map("equipes")
+}
+
+model CorrespondenteBancario {
+  id        String   @id @default(uuid())
+  nome      String
+  ativo     Boolean  @default(true)
+  leads     Lead[]
+  criado_em DateTime @default(now())
+
+  @@map("correspondentes")
+}
+
+model Tag {
+  id        String   @id @default(uuid())
+  nome      String
+  cor       String // ex: "#FF0000" ou "red-500"
+  leads     Lead[]
+  criado_em DateTime @default(now())
+
+  @@map("tags")
+}
+
+model User {
+  id            String     @id @default(uuid())
+  nome          String
+  email         String     @unique
+  senha_hash    String
+  pode_apresentar Boolean @default(false)
+  role          String // "ADM", "VENDEDOR", "SECRETARIA", "GESTOR"
+  url_campanha  String? // URL da campanha de Ads do vendedor
+  criado_em     DateTime   @default(now())
+  atualizado_em DateTime   @updatedAt
+  ativo         Boolean    @default(true)
+  equipe_id     String?
+  equipe        Equipe?    @relation(fields: [equipe_id], references: [id])
+  leads                  Lead[]     @relation("VendedorLeads")
+  leads_transferidos_de  Lead[]     @relation("VendedorAnteriorLeads")
+  login_logs             LoginLog[]
+  campanhas              Campanha[]
+  academy_progressos     AcademyProgresso[]
+  academy_tarefas        AcademyTarefa[]    @relation("TarefaDestinatario")
+  academy_tarefas_criadas AcademyTarefa[]   @relation("TarefaCriador")
+  academy_agendamentos   AcademyAgendamento[]
+  contas_facebook        ContaFacebook[]    @relation("ContasFacebookDono")
+
+  @@map("users")
+}
+
+model Lead {
+  id                String                  @id @default(uuid())
+  nome              String
+  telefone          String
+  email             String?
+  tipo_consorcio    String? // "Imóvel", "Veículo", "Serviços", "Agro"
+  valor_desejado    Float?
+  valor_parcela     Float?
+  valor_entrada     Float?
+  status            String // "Novo", "Em Atendimento", "Agendado", "Proposta Enviada", "Ficha", "Fechado", "Cancelado"
+  origem            String?
+  localizacao       String?
+  observacoes       String
+  vendedor_id          String
+  vendedor             User                    @relation("VendedorLeads", fields: [vendedor_id], references: [id])
+  vendedor_anterior_id String?
+  vendedor_anterior    User?                   @relation("VendedorAnteriorLeads", fields: [vendedor_anterior_id], references: [id])
+  correspondente_id String?
+  correspondente    CorrespondenteBancario? @relation(fields: [correspondente_id], references: [id])
+  data_agendamento  DateTime?
+  tipo_agendamento  String?
+  retornar_contato  Boolean                 @default(false)
+  data_retorno      DateTime?
+  ultima_interacao  DateTime                @default(now())
+  tags              Tag[]
+  criado_em         DateTime                @default(now())
+  atualizado_em     DateTime                @updatedAt
+  documentacao      DocumentacaoCliente?
+
+  @@map("leads")
+}
+
+model DocumentacaoCliente {
+  id                               String   @id @default(uuid())
+  lead_id                          String   @unique
+  lead                             Lead     @relation(fields: [lead_id], references: [id], onDelete: Cascade)
+  nome                             String
+  cpf                              String
+  data_nascimento                  DateTime
+  email                            String
+  celular                          String
+  melhor_horario_comunicacao       String
+  selfie_url                       String
+  assinatura_url                   String
+  documento_identidade_url         String
+  comprovante_endereco_url         String
+  comprovante_renda_url            String?
+  documento_identidade_conjuge_url String?
+  certidao_estado_civil_url        String?
+  anexo_proposta_url               String?
+  criado_em                        DateTime @default(now())
+  atualizado_em                    DateTime @updatedAt
+
+  @@map("documentacoes")
+}
+
+model LoginLog {
+  id         String   @id @default(uuid())
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  ip_address String?
+  user_agent String?
+  criado_em  DateTime @default(now())
+
+  @@map("login_logs")
+}
+
+model Campanha {
+  id        String   @id @default(uuid())
+  nome      String
+  url       String
+  user_id   String
+  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  criado_em DateTime @default(now())
+
+  @@map("campanhas")
+}
+
+// ─── DOMUS ACADEMY ───────────────────────────────────────────────────────────
+
+model AcademyModulo {
+  id        String        @id @default(uuid())
+  titulo    String
+  descricao String
+  ordem     Int
+  icone     String?
+  publicado Boolean       @default(false)
+  criado_em DateTime      @default(now())
+  aulas     AcademyAula[]
+
+  @@map("academy_modulos")
+}
+
+model AcademyAula {
+  id          String             @id @default(uuid())
+  modulo_id   String
+  modulo      AcademyModulo      @relation(fields: [modulo_id], references: [id], onDelete: Cascade)
+  titulo      String
+  tipo        String // "VIDEO" | "TEXTO" | "LINK" | "EXERCICIO"
+  conteudo    String // URL do vídeo, markdown, link externo, ou texto do exercício
+  ordem       Int
+  duracao_min Int?
+  criado_em   DateTime           @default(now())
+  progressos  AcademyProgresso[]
+
+  @@map("academy_aulas")
+}
+
+model AcademyProgresso {
+  id           String      @id @default(uuid())
+  user_id      String
+  user         User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  aula_id      String
+  aula         AcademyAula @relation(fields: [aula_id], references: [id], onDelete: Cascade)
+  concluido    Boolean     @default(false)
+  concluido_em DateTime?
+  xp_ganho     Int         @default(0)
+  pagina_atual Int?        @default(1)
+  criado_em    DateTime    @default(now())
+
+  @@unique([user_id, aula_id])
+  @@map("academy_progressos")
+}
+
+model AcademyTarefa {
+  id             String    @id @default(uuid())
+  user_id        String
+  user           User      @relation("TarefaDestinatario", fields: [user_id], references: [id], onDelete: Cascade)
+  atribuida_por  String
+  criador        User      @relation("TarefaCriador", fields: [atribuida_por], references: [id])
+  titulo         String
+  descricao      String
+  aula_id        String?
+  prazo          DateTime?
+  concluida      Boolean   @default(false)
+  concluida_em   DateTime?
+  xp_ganho       Int       @default(0)
+  criado_em      DateTime  @default(now())
+
+  @@map("academy_tarefas")
+}
+
+model AcademyAgendamento {
+  id          String   @id @default(uuid())
+  user_id     String
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  titulo      String
+  descricao   String?
+  data_hora   DateTime
+  criado_por  String
+  criado_em   DateTime @default(now())
+
+  @@map("academy_agendamentos")
+}
+
+model AcademyLive {
+  id        String    @id @default(uuid())
+  titulo    String
+  descricao String?
+  url       String
+  data_live DateTime?
+  thumbnail String?
+  publicado Boolean   @default(true)
+  criado_em DateTime  @default(now())
+
+  @@map("academy_lives")
+}
+
+// ─── CONTAS FACEBOOK ─────────────────────────────────────────────────────────
+
+model ContaFacebook {
+  id             String   @id @default(uuid())
+  apelido        String   // ex: "Conta Principal Pedro"
+  email          String
+  senha          String   // armazenada em texto (uso interno)
+  observacoes    String?
+  visivel_para_todos Boolean @default(false) // ADM pode liberar para todos verem
+  dono_id        String
+  dono           User     @relation("ContasFacebookDono", fields: [dono_id], references: [id], onDelete: Cascade)
+  criado_em      DateTime @default(now())
+  atualizado_em  DateTime @updatedAt
+
+  @@map("contas_facebook")
+}

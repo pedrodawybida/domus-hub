@@ -1,0 +1,63 @@
+@font-face {
+  font-family: "Domus Display";
+  src: url("/brand/barlow-condensed-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Domus Body";
+  src: url("/brand/inter-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+.page {
+  min-height: 100svh; padding: clamp(12px, 1.6vw, 26px);
+  display: grid; grid-template-columns: 1.08fr 1fr;
+  background: #fff; color: #202638; font-family: "Domus Body", Arial, sans-serif;
+}
+.brand {
+  position: relative; overflow: hidden; isolation: isolate;
+  display: flex; flex-direction: column; justify-content: space-between;
+  background: #283970; color: white; border-radius: 12px;
+  padding: clamp(26px, 4vw, 72px);
+}
+.logo { width: 84px; margin: -13px 0 0 -15px; }
+.coverTitle {
+  position: relative; z-index: 1; margin: 2rem 0 auto; text-transform: uppercase;
+  font: 700 clamp(5rem, 8vw, 9rem)/.83 "Domus Display", sans-serif;
+  letter-spacing: -.045em;
+}
+.art {
+  position: absolute; z-index: -1; max-width: none; width: 202%; right: -9%; bottom: 6%;
+  filter: grayscale(1) invert(1); mix-blend-mode: screen; opacity: .78;
+}
+.caption { display: flex; justify-content: space-between; border-top: 1px solid #ffffff55;
+  padding-top: 12px; margin-top: 28px; font-size: .75rem; }
+.caption span { color: #d4dbeb; }
+.content { display: grid; place-items: center; padding: 40px 30px; }
+.form { width: min(100%, 360px); }
+.form h1 { color: #283970; font: 700 clamp(2.6rem, 4vw, 3.6rem)/1 "Domus Display", sans-serif; letter-spacing: -.02em; }
+.form p { margin: 12px 0 38px; color: #4a5264; font-size: .925rem; }
+.form label { display: block; margin: 19px 0 8px; font-size: .875rem; font-weight: 600; }
+.form input { width: 100%; height: 50px; margin-top: 8px; padding: 0 14px; border: 1px solid #a9afbc;
+  border-radius: 6px; background: white; color: #202638; font: 400 1rem "Domus Body", sans-serif; }
+.password { position: relative; }
+.password input { margin: 0; padding-right: 48px; }
+.password button { position: absolute; inset: 0 0 0 auto; width: 46px; display: grid; place-items: center; color: #52658f; }
+.form button[type="submit"] { width: 100%; margin-top: 28px; padding: 15px 18px; display: flex; justify-content: space-between;
+  align-items: center; border-radius: 6px; background: #283970; color: white; font-weight: 600; }
+.form button[type="submit"]:hover { background: #20305e; }
+.form button:disabled { opacity: .65; }
+.form :is(input,button):focus-visible { outline: 2px solid #52658f; outline-offset: 3px; }
+.form .error { color: #a42e32; margin: 14px 0 0; }
+@media (max-width: 700px) {
+  .page { display: block; padding: 10px; }
+  .brand { height: 190px; padding: 19px 24px; border-radius: 8px; }
+  .logo { width: 54px; margin: -8px 0 0 -9px; }
+  .coverTitle { font-size: 3.5rem; margin: auto 0 0; }
+  .art { width: 112%; right: -8%; bottom: -4%; }
+  .caption { display: none; }
+  .content { padding: 38px 18px; }
+  .form p { margin-bottom: 26px; }
+}

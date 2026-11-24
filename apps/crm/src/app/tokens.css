@@ -1,0 +1,304 @@
+/* Design tokens da Domus CRM. A paleta oficial vem do brandbook; os demais
+   valores são escalas funcionais derivadas para interface e estados. */
+:root {
+  color-scheme: light;
+
+  --brand-primary: #283970;
+  --brand-secondary: #52658f;
+  --brand-highlight: #52658f;
+
+  --surface: #ffffff;
+  --surface-muted: #f3f3f3;
+  --surface-subtle: #f7f7f7;
+  --text-primary: #202638;
+  --text-secondary: #4a5264;
+  --text-muted: #687184;
+  --border: #c9c9c9;
+  --border-subtle: #e5e5e5;
+
+  --status-success: #176b48;
+  --status-success-surface: #edf7f1;
+  --status-warning: #75520b;
+  --status-warning-surface: #fbf5e8;
+  --status-danger: #a42e32;
+  --status-danger-surface: #fbefef;
+  --status-info: #283970;
+  --status-info-surface: #eef1f8;
+  --platform-facebook: #1877f2;
+  --tag-color-01: var(--status-danger);
+  --tag-color-02: var(--status-warning);
+  --tag-color-03: var(--status-success);
+  --tag-color-04: var(--brand-secondary);
+  --tag-color-05: var(--brand-primary);
+  --tag-color-06: var(--text-secondary);
+  --tag-color-07: #737d90;
+  --tag-color-08: #31406c;
+  --tag-color-09: #876a24;
+  --tag-color-10: #6f3343;
+
+  --font-body: var(--font-inter), Arial, sans-serif;
+  --font-display: var(--font-barlow), Arial Narrow, sans-serif;
+  --type-caption: 0.75rem;
+  --type-body: 0.875rem;
+  --type-subheading: 1rem;
+  --type-heading: 1.25rem;
+  --type-display: 1.5rem;
+  --type-title: 1.875rem;
+  --type-large-title: 2.25rem;
+  --type-hero: 3rem;
+  --line-height-body: 1.5;
+  --line-height-heading: 1.2;
+  --tracking-label: 0.035em;
+  --outline-offset: 2px;
+  --outline-offset-control: 1px;
+  --disabled-opacity: 0.58;
+  --ui-transition-fast: 150ms;
+  --ui-transition-normal: 200ms;
+  --ui-transition-slow: 500ms;
+  --ui-transition-long: 700ms;
+  --layout-dialog-max-height: 90vh;
+  --layout-content-max: 100rem;
+  --layout-kanban-column: 19.375rem;
+  --layout-message-max: 80%;
+  --layout-progress-width: 92%;
+  --layout-panel-max-height: 95vh;
+  --layout-media-max-height: 60vh;
+  --layout-scrollbar-height: 0.5rem;
+  --layout-agenda-time-column: 3.75rem;
+  --layout-agenda-min-width: 37.5rem;
+  --layout-agenda-row-height: 3.75rem;
+  --layout-kanban-empty-height: 7.5rem;
+  --layout-academy-chat-height: 31.25rem;
+  --layout-academy-message-height: 23.75rem;
+
+  --ui-space-step: 0.25rem;
+  --ui-radius-sm: 4px;
+  --ui-radius-md: 6px;
+  --ui-radius-lg: 6px;
+  --ui-radius-xl: 6px;
+  --ui-radius-2xl: 6px;
+  --ui-radius-3xl: 6px;
+
+  --border-width: 1px;
+  --border-width-strong: 2px;
+  --elevation-overlay: 0 8px 24px rgb(24 34 56 / 14%);
+  --elevation-menu: 0 4px 12px rgb(24 34 56 / 12%);
+}
+
+@theme inline {
+  --font-sans: var(--font-body);
+  --font-barlow: var(--font-display);
+
+  --color-background: var(--surface);
+  --color-foreground: var(--text-primary);
+  --color-brand-blue: var(--brand-primary);
+  --color-brand-teal: var(--brand-secondary);
+  --color-brand-highlight: var(--brand-highlight);
+  --color-facebook: var(--platform-facebook);
+
+  --color-white: var(--surface);
+  --color-black: #000000;
+
+  --color-slate-50: var(--surface-muted);
+  --color-slate-100: var(--surface-subtle);
+  --color-slate-200: var(--border);
+  --color-slate-55: var(--surface-muted);
+  --color-slate-300: #c5cad5;
+  --color-slate-350: #b6bdca;
+  --color-slate-400: var(--text-muted);
+  --color-slate-450: var(--text-muted);
+  --color-slate-500: var(--text-muted);
+  --color-slate-505: var(--text-muted);
+  --color-slate-550: #596276;
+  --color-slate-600: var(--text-secondary);
+  --color-slate-650: #3e4658;
+  --color-slate-700: #30384a;
+  --color-slate-750: #283144;
+  --color-slate-755: #283144;
+  --color-slate-800: var(--text-primary);
+  --color-slate-850: #1c2332;
+  --color-slate-900: #171c29;
+  --color-slate-950: #10141d;
+
+  --color-teal-50: var(--status-info-surface);
+  --color-teal-100: #e1e6f1;
+  --color-teal-200: #c7d0e4;
+  --color-teal-300: #a6b4d1;
+  --color-teal-400: #8293ba;
+  --color-teal-500: var(--brand-secondary);
+  --color-teal-600: var(--brand-primary);
+  --color-teal-650: #202f60;
+  --color-teal-700: #202f60;
+  --color-teal-800: #1b2852;
+  --color-teal-900: #162143;
+
+  --color-blue-50: var(--status-info-surface);
+  --color-blue-100: #e1e6f1;
+  --color-blue-200: #c7d0e4;
+  --color-blue-300: #a6b4d1;
+  --color-blue-400: #8293ba;
+  --color-blue-500: var(--brand-secondary);
+  --color-blue-600: var(--brand-primary);
+  --color-blue-700: #202f60;
+  --color-blue-800: #1b2852;
+  --color-blue-900: #162143;
+
+  --color-indigo-50: var(--status-info-surface);
+  --color-indigo-100: #e1e6f1;
+  --color-indigo-200: #c7d0e4;
+  --color-indigo-300: #a6b4d1;
+  --color-indigo-400: #8293ba;
+  --color-indigo-500: var(--brand-secondary);
+  --color-indigo-600: var(--brand-primary);
+  --color-indigo-700: #202f60;
+  --color-indigo-800: #1b2852;
+  --color-indigo-900: #162143;
+
+  --color-cyan-50: var(--status-info-surface);
+  --color-cyan-200: #c7d0e4;
+  --color-cyan-400: #8293ba;
+  --color-cyan-500: var(--brand-secondary);
+  --color-cyan-600: var(--brand-primary);
+  --color-cyan-700: #202f60;
+  --color-sky-50: var(--status-info-surface);
+  --color-sky-100: #e1e6f1;
+  --color-sky-400: #8293ba;
+  --color-sky-600: var(--brand-primary);
+  --color-sky-800: #1b2852;
+
+  --color-violet-900: #162143;
+  --color-pink-50: var(--status-info-surface);
+  --color-pink-200: #c7d0e4;
+  --color-pink-400: #8293ba;
+  --color-pink-500: var(--brand-secondary);
+  --color-pink-600: var(--brand-primary);
+  --color-pink-700: #202f60;
+
+  --color-purple-50: var(--status-info-surface);
+  --color-purple-100: #e1e6f1;
+  --color-purple-200: #c7d0e4;
+  --color-purple-300: #a6b4d1;
+  --color-purple-400: #8293ba;
+  --color-purple-500: var(--brand-secondary);
+  --color-purple-600: var(--brand-primary);
+  --color-purple-700: #202f60;
+  --color-purple-800: #1b2852;
+  --color-purple-900: #162143;
+
+  --color-emerald-50: var(--status-success-surface);
+  --color-emerald-100: #dcefe4;
+  --color-emerald-200: #b8dfc9;
+  --color-emerald-250: #acd7bf;
+  --color-emerald-255: #acd7bf;
+  --color-emerald-300: #91cba9;
+  --color-emerald-400: #5fa97e;
+  --color-emerald-500: var(--status-success);
+  --color-emerald-600: var(--status-success);
+  --color-emerald-650: #155d3f;
+  --color-emerald-700: #12563a;
+  --color-emerald-800: #104831;
+  --color-emerald-900: #0c3927;
+
+  --color-green-50: var(--status-success-surface);
+  --color-green-100: #dcefe4;
+  --color-green-200: #b8dfc9;
+  --color-green-300: #91cba9;
+  --color-green-400: #5fa97e;
+  --color-green-500: var(--status-success);
+  --color-green-600: var(--status-success);
+  --color-green-700: #12563a;
+  --color-green-800: #104831;
+  --color-green-900: #0c3927;
+
+  --color-amber-50: var(--status-warning-surface);
+  --color-amber-100: #f4e8c8;
+  --color-amber-200: #e8d59e;
+  --color-amber-250: #ddc88d;
+  --color-amber-255: #ddc88d;
+  --color-amber-300: #d8bd70;
+  --color-amber-400: #bd9941;
+  --color-amber-500: var(--status-warning);
+  --color-amber-600: #805e16;
+  --color-amber-700: var(--status-warning);
+  --color-amber-750: #684b0c;
+  --color-amber-800: #60440b;
+  --color-amber-900: #4e3809;
+  --color-amber-950: #3c2c08;
+
+  --color-orange-50: var(--status-warning-surface);
+  --color-orange-100: #f4e8c8;
+  --color-orange-200: #e8d59e;
+  --color-orange-300: #d8bd70;
+  --color-orange-400: #bd9941;
+  --color-orange-500: var(--status-warning);
+  --color-orange-600: #805e16;
+  --color-orange-700: var(--status-warning);
+  --color-orange-800: #60440b;
+  --color-orange-900: #4e3809;
+  --color-orange-950: #3c2c08;
+
+  --color-yellow-50: var(--status-warning-surface);
+  --color-yellow-100: #f4e8c8;
+  --color-yellow-200: #e8d59e;
+  --color-yellow-300: #d8bd70;
+  --color-yellow-400: #bd9941;
+  --color-yellow-500: var(--status-warning);
+  --color-yellow-600: #805e16;
+  --color-yellow-700: var(--status-warning);
+  --color-yellow-800: #60440b;
+  --color-yellow-900: #4e3809;
+
+  --color-red-50: var(--status-danger-surface);
+  --color-red-100: #f4dddd;
+  --color-red-200: #e7bcbc;
+  --color-red-300: #d69395;
+  --color-red-400: var(--status-danger);
+  --color-red-500: #b2464a;
+  --color-red-550: #ad383c;
+  --color-red-600: #ad383c;
+  --color-red-650: #992d32;
+  --color-red-655: #992d32;
+  --color-red-700: var(--status-danger);
+  --color-red-800: #862429;
+  --color-red-900: #6b1d22;
+
+  --color-rose-50: var(--status-danger-surface);
+  --color-rose-100: #f4dddd;
+  --color-rose-200: #e7bcbc;
+  --color-rose-250: #dca9aa;
+  --color-rose-300: var(--status-danger);
+  --color-rose-400: var(--status-danger);
+  --color-rose-500: #b2464a;
+  --color-rose-600: #ad383c;
+  --color-rose-700: var(--status-danger);
+  --color-rose-800: #862429;
+  --color-rose-900: #6b1d22;
+
+  --radius-sm: var(--ui-radius-sm);
+  --radius-md: var(--ui-radius-md);
+  --radius-lg: var(--ui-radius-lg);
+  --radius-xl: var(--ui-radius-xl);
+  --radius-2xl: var(--ui-radius-2xl);
+  --radius-3xl: var(--ui-radius-3xl);
+  --spacing: var(--ui-space-step);
+  --default-border-width: var(--border-width);
+  --border-width-2: var(--border-width-strong);
+  --shadow-sm: var(--elevation-menu);
+  --shadow-md: var(--elevation-overlay);
+  --shadow-lg: var(--elevation-overlay);
+  --shadow-xl: var(--elevation-overlay);
+  --shadow-2xl: var(--elevation-overlay);
+  --duration-150: var(--ui-transition-fast);
+  --duration-200: var(--ui-transition-normal);
+  --duration-500: var(--ui-transition-slow);
+  --duration-700: var(--ui-transition-long);
+  --text-xs: var(--type-caption);
+  --text-sm: var(--type-body);
+  --text-base: var(--type-body);
+  --text-lg: var(--type-subheading);
+  --text-xl: var(--type-heading);
+  --text-2xl: var(--type-display);
+  --text-3xl: var(--type-title);
+  --text-4xl: var(--type-large-title);
+  --text-5xl: var(--type-hero);
+}

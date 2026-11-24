@@ -1,0 +1,191 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+html {
+  min-height: 100%;
+  background: var(--surface);
+}
+
+body {
+  min-height: 100vh;
+  background: var(--surface-muted);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--type-body);
+  line-height: var(--line-height-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--brand-primary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: var(--line-height-heading);
+}
+
+.bg-brand-blue h1,
+.bg-brand-blue h2,
+.bg-brand-blue h3,
+.bg-brand-blue h4,
+.bg-slate-800 h1,
+.bg-slate-800 h2,
+.bg-slate-800 h3,
+.bg-slate-900 h1,
+.bg-slate-900 h2,
+.bg-slate-900 h3 {
+  color: var(--surface);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: var(--border-width-strong) solid var(--brand-secondary);
+  outline-offset: var(--outline-offset);
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled,
+button:disabled {
+  cursor: not-allowed;
+  opacity: var(--disabled-opacity);
+}
+
+/* Raios curtos para controles e painéis; formas circulares continuam circulares. */
+.rounded-lg,
+.rounded-xl,
+.rounded-2xl,
+.rounded-3xl {
+  border-radius: var(--ui-radius-lg) !important;
+}
+
+/* A elevação fica reservada a diálogos e menus reais. */
+.shadow-xs,
+.shadow-2xs,
+.shadow-sm,
+.shadow-md,
+.shadow-lg,
+.shadow-xl,
+.shadow-2xl,
+[class*="shadow-["] {
+  box-shadow: none !important;
+}
+
+[role="dialog"] .shadow-xs,
+[role="dialog"] .shadow-sm,
+[role="dialog"] .shadow-md,
+[role="dialog"] .shadow-lg,
+[role="dialog"] .shadow-xl,
+[role="dialog"] .shadow-2xl,
+[role="menu"],
+[data-elevation="menu"],
+[class*="fixed"] .bg-white[class*="shadow-"] {
+  box-shadow: var(--elevation-overlay) !important;
+}
+
+/* Inputs mantêm aparência de controle e foco legível em todas as telas. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+select,
+textarea {
+  border-radius: var(--ui-radius-md);
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+select:focus,
+textarea:focus {
+  border-color: var(--brand-primary);
+  outline: var(--border-width-strong) solid color-mix(in srgb, var(--brand-primary) 24%, transparent);
+  outline-offset: var(--outline-offset-control);
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background-color: var(--surface-subtle);
+  color: var(--text-muted);
+}
+
+/* Tables use compact, aligned rows with a persistent header when scrollable. */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--surface-muted);
+}
+
+th {
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: var(--type-caption);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-align: left;
+}
+
+td,
+th {
+  border-bottom: var(--border-width) solid var(--border-subtle);
+}
+
+tbody tr:hover {
+  background-color: var(--surface-muted);
+}
+
+/* Kanban scrollbar */
+.kanban-scroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-muted) var(--surface-subtle);
+}
+
+.kanban-scroll::-webkit-scrollbar {
+  height: var(--layout-scrollbar-height);
+}
+
+.kanban-scroll::-webkit-scrollbar-track {
+  background: var(--surface-subtle);
+  border-radius: var(--ui-radius-sm);
+}
+
+.kanban-scroll::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: var(--ui-radius-sm);
+}
+
+.agenda-grid {
+  display: grid;
+  grid-template-columns: var(--layout-agenda-time-column) repeat(6, 1fr);
+}
+
+.academy-progress { appearance: none; border: 0; background: #596996; color: white; }
+.academy-progress::-webkit-progress-bar { background: #596996; }
+.academy-progress::-webkit-progress-value { background: white; }
+.academy-progress::-moz-progress-bar { background: white; }

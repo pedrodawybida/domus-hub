@@ -1,0 +1,19 @@
+{
+    admin off
+}
+
+:3000 {
+    @login path /crm/login /crm/login/
+    redir @login /login 307
+
+    @antigo path /dashboard /dashboard/* /admin /admin/* /uploads /uploads/*
+    redir @antigo /crm{uri} 307
+
+    @crm path /crm /crm/*
+    handle @crm {
+        reverse_proxy 127.0.0.1:3302
+    }
+    handle {
+        reverse_proxy 127.0.0.1:3301
+    }
+}
