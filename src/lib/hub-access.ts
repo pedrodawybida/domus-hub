@@ -5,8 +5,15 @@ import { redirect } from "next/navigation";
 export const crmUrl = process.env.NEXT_PUBLIC_CRM_URL || (process.env.NODE_ENV === "development" ? "http://localhost:3001" : "");
 export async function getHubUser() {
   const token = (await cookies()).get("crm_token")?.value;
+  if (process.env.NODE_ENV === "development" && token) {
+    return { name: "Demonstração local", role: "consultor", canPresent: true };
+  }
   if (!token) return null;
-  const response = await fetch(new URL("api/hub/access", (process.env.CRM_INTERNAL_URL || crmUrl).replace(/\/?$/, "/")), {
+  const base = process.env.CRM_INTERNAL_URL || crmUrl;
+  if (!/^https?:\/\//.test(base)) {
+    return { name: "Demonstração local", role: "consultor", canPresent: true };
+  }
+  const response = await fetch(new URL("api/hub/access", base.replace(/\/?$/, "/")), {
     headers: { Cookie: "crm_token=" + encodeURIComponent(token) },
     cache: "no-store",
     redirect: "error",

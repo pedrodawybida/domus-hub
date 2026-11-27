@@ -58,6 +58,17 @@ interface IBGERegionRecord {
   referenceYear: number;
 }
 
+interface MarketRecord {
+  municipio: string;
+  nome: string;
+  periodo: string;
+  preco: number | null;
+  variacao12m: number | null;
+  status: string;
+  metodo: string;
+  confianca: string;
+}
+
 const formatCensusValue = (value: number | null | undefined, decimals = 0) =>
   value == null
     ? "—"
@@ -140,6 +151,11 @@ export default function JornadaClientePage() {
   const [selectedNeighborhoodCode, setSelectedNeighborhoodCode] = useState("");
   const [regionLoading, setRegionLoading] = useState(false);
   const [regionError, setRegionError] = useState("");
+  const [market, setMarket] = useState<MarketRecord | null>(null);
+  const [neighborhoodMarket, setNeighborhoodMarket] = useState<Record<string, MarketRecord | null>>({});
+  const [marketPriceOverride, setMarketPriceOverride] = useState("");
+  const [marketVariationOverride, setMarketVariationOverride] = useState("");
+  const [investmentRange, setInvestmentRange] = useState("");
   const [clientGoal, setClientGoal] = useState(
     "Aquisição do Imóvel Perfeito & Moradia"
   );
@@ -165,6 +181,29 @@ export default function JornadaClientePage() {
     ? neighborhoods.find((item) => item.code === selectedNeighborhoodCode) || selectedMunicipality
     : selectedMunicipality;
 
+  const selectedMarket = selectedNeighborhoodCode
+    ? neighborhoodMarket[selectedNeighborhoodCode] || market
+    : market;
+
+  useEffect(() => {
+    const payload = {
+      name: clientName,
+      city: selectedMunicipality?.name || citySearch,
+      neighborhood: neighborhoods.find((item) => item.code === selectedNeighborhoodCode)?.name || "",
+      budgetMin: 0,
+      budgetMax: 0,
+      marketPrice: marketPriceOverride || selectedMarket?.preco || "",
+      marketVariation: marketVariationOverride || selectedMarket?.variacao12m || "",
+      investmentRange,
+    };
+    try {
+      sessionStorage.setItem("domus-client-presentation", JSON.stringify(payload));
+    } catch {
+      // A apresentação continua funcionando quando o navegador bloqueia o armazenamento local.
+    }
+    window.postMessage({ type: "domus-ficha-client", payload }, window.location.origin);
+  }, [citySearch, clientName, investmentRange, marketPriceOverride, marketVariationOverride, neighborhoods, selectedMarket, selectedMunicipality, selectedNeighborhoodCode]);
+
   const selectMunicipality = useCallback(async (municipality: IBGERegionRecord) => {
     setCitySearch(`${municipality.name}, ${municipality.state}`);
     setSelectedMunicipality(municipality);
@@ -179,6 +218,8 @@ export default function JornadaClientePage() {
       const data = await response.json();
       setSelectedMunicipality(data.municipality as IBGERegionRecord);
       setNeighborhoods(data.neighborhoods as IBGERegionRecord[]);
+      setMarket(data.market as MarketRecord | null);
+      setNeighborhoodMarket(data.neighborhoodMarket as Record<string, MarketRecord | null>);
     } catch (error) {
       setRegionError(error instanceof Error ? error.message : "Erro ao consultar a base local do IBGE.");
     } finally {
@@ -564,6 +605,47 @@ export default function JornadaClientePage() {
                   </option>
                 </select>
               </div>
+
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                  Preço médio anunciado · edição manual
+                </label>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={marketPriceOverride || (selectedMarket?.preco != null ? String(selectedMarket.preco) : "")}
+                  onChange={(event) => setMarketPriceOverride(event.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-bold text-slate-900 outline-none"
+                  placeholder="Ex.: 11716"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                  Variação em 12 meses · edição manual
+                </label>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  value={marketVariationOverride || (selectedMarket?.variacao12m != null ? String(selectedMarket.variacao12m) : "")}
+                  onChange={(event) => setMarketVariationOverride(event.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-bold text-slate-900 outline-none"
+                  placeholder="Ex.: 8,5%"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5">
+                  Faixa de investimento · edição manual
+                </label>
+                <input
+                  type="text"
+                  value={investmentRange}
+                  onChange={(event) => setInvestmentRange(event.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-bold text-slate-900 outline-none"
+                  placeholder="Ex.: R$ 400 mil a R$ 600 mil"
+                />
+              </div>
             </div>
 
             {/* Prezi Slide 2 Hero: "Planejamento patrimonial: CREONICE" */}
@@ -627,6 +709,25 @@ export default function JornadaClientePage() {
               </strong>
             </p>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-8">
+              <div className="bg-[#f5f7fc] border border-indigo-100 rounded-2xl p-6">
+                <p className="text-sm font-bold uppercase tracking-wide text-slate-600">Preço médio anunciado</p>
+                <p className="text-3xl font-bold text-[#283970] mt-2">
+                  {selectedMarket?.preco != null ? `${formatBRL(selectedMarket.preco)} / m²` : "Indisponível"}
+                </p>
+                <p className="text-xs text-slate-600 mt-3">
+                  {selectedMarket ? `${selectedMarket.status === "ESTIMADO" ? "Estimativa · " : "Observado · "}${selectedMarket.periodo}` : "Sem registro para a região selecionada"}
+                </p>
+              </div>
+              <div className="bg-[#f5f7fc] border border-indigo-100 rounded-2xl p-6">
+                <p className="text-sm font-bold uppercase tracking-wide text-slate-600">Variação em 12 meses</p>
+                <p className="text-3xl font-bold text-[#283970] mt-2">
+                  {selectedMarket?.variacao12m != null ? `${selectedMarket.variacao12m.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}%` : "Indisponível"}
+                </p>
+                <p className="text-xs text-slate-600 mt-3">Fonte: FipeZAP · confiança {selectedMarket?.confianca || "—"}</p>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-8">
               {[
                 {
@@ -676,7 +777,7 @@ export default function JornadaClientePage() {
               ))}
             </div>
             <p className="mt-6 text-xs leading-relaxed text-slate-500">
-              Fonte: <a className="underline" href="https://www.ibge.gov.br/estatisticas/sociais/trabalho/22827-censo-demografico-2022.html?edicao=41852&amp;t=resultados" target="_blank" rel="noreferrer">IBGE · Censo Demográfico 2022</a>. Dados por bairro são apresentados quando publicados pelo IBGE; caso contrário, usamos o agregado municipal. Esta base não contém preços de imóveis nem valorização imobiliária.
+              Fontes: <a className="underline" href="https://www.ibge.gov.br/estatisticas/sociais/trabalho/22827-censo-demografico-2022.html?edicao=41852&amp;t=resultados" target="_blank" rel="noreferrer">IBGE · Censo Demográfico 2022</a> e <a className="underline" href="https://www.fipe.org.br/pt-br/indices/fipezap/" target="_blank" rel="noreferrer">FipeZAP</a>. Valores estimados estão identificados na própria apresentação.
             </p>
           </section>
         )}

@@ -3492,6 +3492,7 @@
         return {
           name: String(data.name || "").trim(),
           city: String(data.city || "").trim(),
+          neighborhood: String(data.neighborhood || "").trim(),
           budgetMin: Number(data.budgetMin) || 0,
           budgetMax: Number(data.budgetMax) || 0
         };
@@ -3572,6 +3573,7 @@
       const clientPresentation = {
         name,
         city: form.elements.cidade.value,
+        neighborhood: form.elements.bairro.value.trim(),
         budgetMin: parseFichaMoney(form.elements.precoMin.value),
         budgetMax: parseFichaMoney(form.elements.precoMax.value)
       };
@@ -3583,7 +3585,7 @@
       const result = document.getElementById("ficha-success");
       result.replaceChildren();
       const message = document.createElement("span");
-      message.textContent = `Ficha de ${name} criada nesta sessão${amenities.length ? `, com ${amenities.length} comodidade(s) selecionada(s)` : ""}. Nome, cidade e faixa de investimento ficam temporariamente nesta sessão para personalizar a apresentação; não são enviados a terceiros nem guardados em uma conta.`;
+      message.textContent = `Ficha de ${name} criada nesta sessão${amenities.length ? `, com ${amenities.length} comodidade(s) selecionada(s)` : ""}. Nome, cidade, bairro e faixa de investimento ficam temporariamente nesta sessão para personalizar a apresentação; não são enviados a terceiros nem guardados em uma conta.`;
       const printButton = document.createElement("button");
       printButton.type = "button";
       printButton.textContent = "Imprimir ficha";

@@ -1,11 +1,52 @@
 import { getHubUser } from "@/lib/hub-access";
 import { NextResponse } from "next/server";
 import ibgeMock from "@/data/ibge-censo-2022.mock.json";
+import fs from "node:fs";
+import path from "node:path";
 
 export const runtime = "nodejs";
 
 type Municipality = (typeof ibgeMock.municipalities)[number];
 type Neighborhood = (typeof ibgeMock.neighborhoods)[number];
+type MarketRecord = {
+  municipio: string;
+  nome: string;
+  periodo: string;
+  preco: number | null;
+  variacao12m: number | null;
+  status: string;
+  metodo: string;
+  confianca: string;
+};
+
+function loadMarketRecords(): MarketRecord[] {
+  const file = path.join(process.cwd(), "entregaveis", "base_imobiliaria_curitiba_rmc.csv");
+  if (!fs.existsSync(file)) return [];
+  const lines = fs.readFileSync(file, "utf8").replace(/^\uFEFF/, "").trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(";");
+  const index = (name: string) => headers.indexOf(name);
+  const value = (row: string[], name: string) => row[index(name)] || "";
+  return lines.slice(1).map((line) => {
+    const row = line.split(";");
+    const number = (name: string) => {
+      const raw = value(row, name).replace(",", ".");
+      const parsed = Number(raw);
+      return Number.isFinite(parsed) ? parsed : null;
+    };
+    return {
+      municipio: value(row, "municipio"), nome: value(row, "nome"), periodo: value(row, "periodo"),
+      preco: number("preco_medio_anunciado_brl_m2"), variacao12m: number("variacao_fipezap_12m_pct"),
+      status: value(row, "status_cobertura"), metodo: value(row, "metodo"), confianca: value(row, "nivel_confianca"),
+    };
+  });
+}
+
+const marketRecords = loadMarketRecords();
+const latestMarket = (municipio: string, nome?: string) => {
+  const matches = marketRecords.filter((item) => item.municipio === municipio && (!nome || normalize(item.nome) === normalize(nome)) && item.preco != null);
+  return matches.sort((a, b) => b.periodo.localeCompare(a.periodo))[0] || null;
+};
 
 const normalize = (value: string) =>
   value
@@ -46,6 +87,8 @@ export async function GET(request: Request) {
     return NextResponse.json({
       municipality,
       neighborhoods,
+      market: latestMarket(municipality.name),
+      neighborhoodMarket: Object.fromEntries(neighborhoods.map((item) => [item.code, latestMarket(municipality.name, item.name)])),
       source: ibgeMock.metadata,
     });
   }

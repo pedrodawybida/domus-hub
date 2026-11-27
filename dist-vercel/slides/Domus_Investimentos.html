@@ -279,6 +279,8 @@ html,body,.stage{background:#ffffff;color:#283970}
  --bot-bar:clamp(68px,11dvh,120px);
 }
 .chrome .logo{left:var(--safe-x);top:clamp(20px,3.4dvh,44px);width:clamp(34px,3vw,52px);height:auto}
+@keyframes brandPulse{0%{opacity:.2;transform:translateY(5px) scale(.92)}60%{opacity:1;transform:translateY(0) scale(1.04)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.stage.house-mode .chrome .logo{animation:brandPulse 1.2s var(--ease) both}
 .counter{right:var(--safe-x);top:clamp(24px,4dvh,48px);font-size:clamp(12px,.9vw,16px)}
 .ticks{left:var(--safe-x);right:var(--safe-x);bottom:clamp(16px,2.8dvh,34px);height:20px}
 .btns{right:var(--safe-x);bottom:clamp(42px,6.4dvh,76px);gap:8px}
@@ -368,17 +370,22 @@ html,body,.stage{background:#ffffff;color:#283970}
 /* Slides 04–10: Left text column strictly separated from Right graphic stage */
 .step .wrap,.overview .wrap,.end .wrap{
  right:auto;
- width:min(38vw,640px);
+ width:min(29vw,480px);
+ padding-top:clamp(34px,4vw,64px);
+ box-sizing:border-box;
  display:flex;
  flex-direction:column;
  justify-content:center;
+}
+.step .wrap{
+ justify-content:flex-start;
 }
 .step .h,.overview .h,.end .h{
  font-size:clamp(32px,4.4vw,76px);
  margin:clamp(6px,1.2dvh,16px) 0 clamp(12px,2dvh,24px);
 }
 .step .sub,.end .sub{max-width:36ch;font-size:clamp(14px,1.2vw,20px)}
-.pips{margin-bottom:clamp(12px,2dvh,24px)}
+.step .pips{margin-top:clamp(32px,3vw,52px);margin-bottom:clamp(12px,2dvh,24px)}
 .opts{gap:clamp(10px,1.5dvh,20px);margin-top:clamp(4px,.8dvh,12px)}
 .opt b{font-size:clamp(16px,1.35vw,22px);color:#283970}
 .opt span{font-size:clamp(13px,1vw,17px)}
@@ -400,9 +407,9 @@ html,body,.stage{background:#ffffff;color:#283970}
 
 /* World SVG restricted to right half on step slides so it NEVER overlaps left text */
 .world{
- left:46vw;
+ left:52vw;
  top:var(--top-bar);
- width:calc(54vw - var(--safe-x));
+ width:calc(48vw - var(--safe-x));
  height:calc(100dvh - var(--top-bar) - var(--bot-bar));
 }
 
@@ -418,7 +425,15 @@ html,body,.stage{background:#ffffff;color:#283970}
 .arch path,.arch line,.arch rect,.arch .win-glow{stroke:rgba(40,57,112,.82)}
 .arch .win-glow,.world.house-only .arch .win-glow{fill:rgba(40,57,112,.08)}
 
-</style>
+.mkt .wrap{padding:0;align-content:center;grid-template-rows:auto auto auto;gap:clamp(10px,3vh,32px);overflow:auto;overflow-wrap:anywhere}
+.mkt .curve{display:none}
+.market-data{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1em;margin:0}
+.market-data div{border-left:2px solid #bcc4d8;padding-left:1em}
+.market-data dt,.market-note{font:400 clamp(15px,1.35vw,22px)/1.3 var(--sans);margin:0}
+.market-data dd{font:600 clamp(19px,2vw,32px)/1.16 var(--sans);margin:.25em 0 0}
+.market-note a{color:inherit}
+@media(max-width:600px){.market-data{grid-template-columns:1fr;gap:.65em}.mkt .wrap{align-content:safe center}}
+.editable-field{cursor:text;border-radius:.25em;outline:0;transition:box-shadow .2s ease,background .2s ease}.editable-field:hover,.editable-field:focus{background:rgba(40,57,112,.06);box-shadow:0 0 0 .18em rgba(40,57,112,.12)}#client-cover-title,#client-cover-title .w,#client-cover-title .wi{color:#8ed2d0;-webkit-text-fill-color:#8ed2d0}</style>
 </head>
 <body>
 <button class="platform-back" type="button" onclick="if(window.parent!==window){window.parent.postMessage({type:'domus-back-to-central'},location.origin)}else if(history.length>1){history.back()}else{location.href=location.protocol==='file:'?'../../apresentacao-interativa.html':'/'}">← Central de Apresentações</button>
@@ -504,14 +519,12 @@ html,body,.stage{background:#ffffff;color:#283970}
    <p class="kicker fx" style="--base:.2s" id="client-market-kicker">Região de interesse · a definir</p>
    <h2 class="h" data-split style="--base:.35s">Conheça o cenário. Decida no seu tempo.</h2>
   </div>
-  <div class="stats">
-   <div class="stat fx" style="--base:.8s"><div class="big"><span data-count="8" id="market-history-value">8</span><sup>%</sup></div><p class="cap" id="market-history-label">Pinhais · últimos 10 anos</p><p id="market-history-description">Valorização média indicada na referência.</p></div>
-   <div class="stat future fx" style="--base:1.2s"><div class="big"><span data-count="9" id="market-projection-value">9</span><sup>%</sup><small>/ ano</small></div><p class="cap" id="market-projection-label">Pinhais · próximos 10 anos</p><p id="market-projection-description">Projeção citada no material, sem garantia.</p></div>
-  </div>
-  <div class="mkt-foot">
-   <div class="facts fx" style="--base:2s"><div><b id="market-sqm-value">R$ 3.500–4.500/m²</b><span id="market-sqm-label">preço médio informado em Pinhais</span></div><div><b id="client-budget-value">A definir na ficha</b><span>faixa de investimento do cliente</span></div></div>
-   <p class="caveat fx" style="--base:2.4s" id="market-source-note">Fonte: pasta de referência (capturas fornecidas). Indicadores de Pinhais; data-base e metodologia não informadas. A projeção de 9% ao ano é reproduzida do material e não é garantia de resultado.</p>
-  </div>
+  <dl class="market-data">
+   <div><dt>Variação em 12 meses</dt><dd id="market-history-value">Indisponível</dd></div>
+   <div><dt>Preço médio anunciado</dt><dd id="market-sqm-value">Indisponível</dd></div>
+   <div><dt>Faixa de investimento</dt><dd id="client-budget-value">A definir na ficha</dd></div>
+  </dl>
+  <p class="market-note" id="market-note"><span id="market-source-note"></span> <a href="https://www.datazap.com.br/wp-content/uploads/2025/12/fipezap-202511-residencial-venda.pdf" target="_blank" rel="noreferrer">Informe FipeZAP · novembro de 2025</a></p>
  </div>
 </section>
 
@@ -587,14 +600,14 @@ html,body,.stage{background:#ffffff;color:#283970}
  <div class="fade-l"></div>
  <div class="wrap">
   <p class="kicker fx" style="--base:.2s">Seu próximo passo começa aqui</p>
-  <h2 class="h" data-split>Vamos encontrar juntos o imóvel certo para <em>você?</em></h2>
+  <h2 class="h" data-split>Vamos dar juntos o próximo passo?</h2>
   <p class="sub fx" style="--base:1.4s">Conte para nós o que você procura. A Domus entende o seu momento e apresenta caminhos possíveis, com orientação do primeiro passo à entrega das chaves.</p>
   <span class="cta fx" style="--base:1.9s">Vamos começar com uma conversa?</span>
  </div>
 </section>
 
 <div class="chrome">
- <img class="logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTG9nb0RvbXVzQ29sb3JfeDVGXzI4Mzk3MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTQxNy41MyAxMzczLjU1Ij4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmNscy0xIHsKICAgICAgICBmaWxsOiAjMjgzOTcwOwogICAgICB9CiAgICA8L3N0eWxlPgogIDwvZGVmcz4KICA8ZyBpZD0iTG9nb0RvbXVzIj4KICAgIDxnPgogICAgICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0zOTguNDQsNDc3LjQ1aC01Mi4zNnY1NjguNTVoNTIuMzZjMTkuNDEsMCwzNS4xNi0xNS43NSwzNS4xNi0zNS4xNnYtNDk4LjI0YzAtMTkuNDItMTUuNzUtMzUuMTUtMzUuMTYtMzUuMTVaTTQwMC43OCwxMDA0LjI3YzAsNC4xMi0zLjM0LDcuNDctNy40Nyw3LjQ3aC0xNS45NXYtNDk5Ljk4aDE1Ljk1YzQuMTMsMCw3LjQ3LDMuMzQsNy40Nyw3LjQ3djQ4NS4wNFoiLz4KICAgICAgPHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTQzLjg2LDQ3Ny40NWgtMTcuMjFjLTE5LjQyLDAtMzUuMTYsMTUuNzMtMzUuMTYsMzUuMTV2NDk4LjI0YzAsMTkuNDEsMTUuNzQsMzUuMTYsMzUuMTYsMzUuMTZoMTcuMjFjMTkuNDEsMCwzNS4xNS0xNS43NSwzNS4xNS0zNS4xNnYtNDk4LjI0YzAtMTkuNDItMTUuNzQtMzUuMTUtMzUuMTUtMzUuMTVaTTU0Ni45NiwxMDA0LjI3YzAsNC4xMi0zLjM0LDcuNDctNy40Nyw3LjQ3aC04LjQ3Yy00LjEzLDAtNy40OC0zLjM1LTcuNDgtNy40N3YtNDg1LjA0YzAtNC4xMywzLjM1LTcuNDcsNy40OC03LjQ3aDguNDdjNC4xMywwLDcuNDcsMy4zNCw3LjQ3LDcuNDd2NDg1LjA0WiIvPgogICAgICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzguNzMsNDc3LjQ1djU2OC41NWgtMzIuMDlWNTExLjc2aC0xNS45NGMtNC4xMywwLTcuNDcsMy4zNC03LjQ3LDcuNDd2NTI2Ljc3aC0yOS45di01MjYuNzdjMC00LjEzLTMuMzQtNy40Ny03LjQ3LTcuNDdoLTE1Ljk0djUzNC4yNGgtMzIuMTFWNDc3LjQ1aDQyLjc4YzEwLjQ2LDAsMjAuMDgsMy41OSwyNy42OSw5LjYsNy42MS02LjAxLDE3LjIzLTkuNiwyNy42OC05LjZoNDIuNzhaIi8+CiAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTkyMS45MSw0NzcuNDV2NTMzLjM5YzAsMTkuNDItMTUuNzQsMzUuMTYtMzUuMTYsMzUuMTZoLTE3LjIxYy0xOS40MiwwLTM1LjE2LTE1Ljc0LTM1LjE2LTM1LjE2VjQ3Ny40NWgzMi4wNXY1MjYuNzljMCw0LjEyLDMuMzUsNy40Nyw3LjQ3LDcuNDdoOC40N2M0LjEyLDAsNy40Ny0zLjM1LDcuNDctNy40N1Y0NzcuNDVoMzIuMDVaIi8+CiAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTEwMzUuMjcsNjE2LjR2LTk3LjE0YzAtLjQtLjA0LS43OC0uMDktMS4xNy0uMDQtLjIyLS4wOC0uNDQtLjEzLS42Ni0uMDUtLjItLjExLS40LS4xOC0uNiwwLDAsMC0uMDMtLjAyLS4wNC0uMDMtLjEtLjA2LS4xOC0uMS0uMjgsMCwwLDAtLjAyLS4wMi0uMDMtLjAzLS4wOC0uMDYtLjE2LS4xLS4yNCwwLS4wMy0uMDItLjA0LS4wNC0uMDctLjAyLS4wNC0uMDQtLjEtLjA2LS4xNGwtLjA4LS4xNmMtLjA4LS4xNy0uMTctLjMzLS4yNy0uNDktLjA0LS4wNy0uMDktLjE0LS4xMy0uMjEtLjAzLS4wNC0uMDUtLjA5LS4xLS4xMywwLS4wMi0uMDItLjA0LS4wMy0uMDUtLjAzLS4wNC0uMDUtLjA4LS4wOS0uMTIsMC0uMDItLjAzLS4wMy0uMDQtLjA0LS4wNC0uMDUtLjA3LS4xMS0uMTEtLjE2LS4wNC0uMDUtLjA5LS4xMS0uMTMtLjE2LS4wNC0uMDYtLjA5LS4xMS0uMTQtLjE3bC0uMDUtLjA1aDBjLS4wNC0uMDUtLjA5LS4xMS0uMTMtLjE1LDAsMC0uMDItLjAyLS4wMy0uMDItLjAyLS4wNC0uMDQtLjA1LS4wNy0uMDgtLjA0LS4wNC0uMDctLjA4LS4xMS0uMTEtLjA0LS4wNS0uMDctLjA5LS4xMS0uMTItLjA0LS4wNC0uMDktLjA4LS4xMy0uMTEsMC0uMDItLjAzLS4wNC0uMDQtLjA0LS4wMy0uMDQtLjA0LS4wNS0uMDctLjA2LS4wNC0uMDQtLjA2LS4wNy0uMS0uMDl0LS4wMiwwcy0uMDMtLjA0LS4wNC0uMDRjLS4wNi0uMDYtLjEzLS4xMS0uMi0uMTYtLjA4LS4wNy0uMTctLjE0LS4yNS0uMTgtLjA3LS4wNi0uMTQtLjExLS4yMi0uMTctLjEtLjA2LS4yLS4xMi0uMzEtLjE4LS4wOS0uMDYtLjE4LS4xMS0uMjYtLjE3LDAsMC0uMDIsMC0uMDMsMC0uMDktLjA0LS4xOC0uMDktLjI3LS4xMi0uMTEtLjA2LS4yNC0uMTEtLjM2LS4xNy0uMDUtLjAzLS4xMS0uMDQtLjE3LS4wNi0uMDIsMC0uMDQtLjAyLS4wNi0uMDMtLjA0LS4wMi0uMDctLjAzLS4xMS0uMDQtLjExLS4wNC0uMjItLjA4LS4zMy0uMTEsMCwwLS4wMiwwLS4wMywwLS4wNCwwLS4wOC0uMDMtLjExLS4wNC0uMDQsMC0uMDktLjAzLS4xMy0uMDQtLjE2LS4wNC0uMzMtLjA4LS40OS0uMTEtLjAyLDAtLjA0LDAtLjA1LDAtLjEzLS4wMy0uMjctLjA1LS40LS4wNi0uMDYsMC0uMTMtLjAyLS4xOS0uMDMtLjA0LDAtLjA4LDAtLjExLDAtLjAzLDAtLjA0LDAtLjA3LDAtLjE4LDAtLjM2LS4wMi0uNTQtLjAyaC04LjQ3Yy0uODcsMC0xLjcxLjE1LTIuNDkuNDMtLjExLjA0LS4yMi4wOC0uMzMuMTItLjIyLjA5LS40My4xOC0uNjMuMjksMCwwLS4wMi4wMi0uMDMsMC0uMi4xMS0uMzkuMjMtLjU3LjM0LS4wOC4wNS0uMTUuMS0uMjIuMTctLjA5LjA0LS4xNy4xMS0uMjUuMTgtLjA3LjA0LS4xMy4xLS4yLjE2LS4xLjA3LS4xOC4xNS0uMjcuMjQtLjA0LjA0LS4wOS4wNy0uMTMuMTEtLjA0LjA0LS4wOC4wNy0uMTEuMTItLjA0LjAzLS4wOC4wNy0uMTEuMTEtLjAzLjAzLS4wNS4wNC0uMDcuMDgsMCwwLS4wMiwwLS4wMy4wMi0uMDQuMDQtLjA5LjEtLjEzLjE0LS4wNy4wNy0uMTMuMTUtLjE4LjIzLDAsMC0uMDIsMC0uMDIsMC0uMDMuMDItLjA0LjA0LS4wNC4wNWgwczAsLjAyLDAsLjAyYy0uMDMuMDItLjA0LjA0LS4wNS4wNi0uMDUuMDUtLjA5LjEtLjExLjE1LS4wMy4wNC0uMDUuMDYtLjA2LjEtLjAyLDAtLjAzLjAyLS4wMi4wMy0uMDQuMDQtLjA3LjA4LS4wOS4xMi0uMTMuMTYtLjI0LjMzLS4zMi41MS0uMDYuMDktLjExLjE4LS4xNi4yOHQwLC4wMmgwczAsMCwwLDBjLS4wNS4xLS4xMS4yLS4xNS4zMWgwcy0uMDMuMDUtLjA0LjA4Yy0uMDguMTgtLjE2LjM1LS4yMS41NCwwLDAtLjAyLjAzLS4wMi4wNC0uMDYuMTktLjEyLjQtLjE4LjYtLjA1LjIyLS4xLjQ0LS4xMy42Ni0uMDUuMzktLjA5Ljc3LS4wOSwxLjE3djE1Ni44N2MwLDQuMTIsMy4zNCw3LjQ3LDcuNDcsNy40N2gxMi44NGM3LjQ5LDAsMzUuMTUsNC42LDM1LjE1LDU0LjM0djI3Mi45YzAsLjU3LS4wMiwxLjEzLS4wNCwxLjctLjA1LDEuMTMtLjE2LDIuMjMtLjMyLDMuMzMtLjA0LjI3LS4wOC41NC0uMTIuODItLjEuNTItLjE5LDEuMDMtLjMsMS41NC0uMDUuMy0uMTIuNTktLjE5Ljg4LS4xMy41My0uMjYsMS4wNS0uNDIsMS41Ny0uMS4zNC0uMi42OS0uMzMsMS4wMy0uMTMuNDMtLjI4Ljg1LS40NCwxLjI3LS4wOS4yNS0uMTguNTEtLjI4Ljc2LS4zMS44LS42NSwxLjU4LTEuMDMsMi4zNS0uOTksMi4wNi0yLjE3LDMuOTktMy41Miw1Ljc5LS4zNC40Ni0uNjkuOS0xLjA1LDEuMzMtNi40NCw3LjgxLTE2LjIsMTIuOC0yNy4xMiwxMi44aC0xNy4yMWMtMTkuNDIsMC0zNS4xNi0xNS43NC0zNS4xNi0zNS4xNnYtMjA2LjkyaDMyLjA1djIwMC4zNWMwLC4yMiwwLC40Mi4wMy42My4wMi4xNi4wNC4zMi4wNi40NywwLC4xMi4wNC4yNS4wNi4zNy4wNS4yNC4xMS40Ny4xOC43MS4xNC40Ny4zMy45Mi41NiwxLjM0LjExLjIxLjI0LjQyLjM4LjYyLjEzLjIuMjcuNC40My41OC4xMS4xNC4yMi4yNy4zNS40LjEyLjEzLjI1LjI2LjM5LjM4LDEuMzMsMS4yMywzLjA5LDEuOTcsNS4wMywxLjk3aDguNDdjLjIsMCwuNCwwLC42MS0uMDMuMDcsMCwuMTQsMCwuMi0uMDIuMi0uMDIuNC0uMDUuNi0uMDkuMjMtLjA0LjQ2LS4xLjY4LS4xNy4yMi0uMDYuNDMtLjEzLjY0LS4yMi4xNS0uMDUuMjktLjExLjQyLS4xOC4xNC0uMDYuMjYtLjEyLjQtLjIsMCwwLC4wMiwwLC4wMywwLC4xOC0uMS4zNS0uMi41Mi0uMzIuMDgtLjA0LjE1LS4xLjIyLS4xNi4wNi0uMDQuMTItLjA4LjE4LS4xMi4wNi0uMDQuMTItLjA5LjE4LS4xNS4xMS0uMDguMjMtLjE4LjM0LS4yOGgwYy4xMS0uMS4yMi0uMi4zMy0uMzEuMTEtLjExLjItLjIxLjMtLjMzLjE5LS4yMy4zOC0uNDcuNTQtLjcxLjE5LS4yOC4zNy0uNTguNTItLjg5aDBjLjE4LS4zNi4zMy0uNzMuNDQtMS4xMS4wOC0uMjQuMTMtLjQ3LjE4LS43MS4wMy0uMTIuMDUtLjI1LjA2LS4zNy4wMy0uMTYuMDQtLjMyLjA2LS40Ny4wMi0uMjEuMDMtLjQxLjAzLS42M3YtMjc0LjM5YzAtOC00Ljg3LTE0LjYtMTEuOTMtMTQuNmgtOC4zOGMtMTEuNTEsMC0yMS43My01LjUzLTI4LjE0LTE0LjA4LTQuNC01Ljg3LTcuMDEtMTMuMTgtNy4wMS0yMS4wOHYtMTY3LjQ5YzAtMi40My4yNS00LjguNzEtNy4wOC43Mi0zLjUxLDEuOTYtNi44MywzLjYzLTkuODcuNDgtLjg3Ljk5LTEuNzEsMS41NC0yLjUzaDBjMS4yLTEuODEsMi41Ny0zLjQ5LDQuMDYtNS4wMy4yMS0uMjIuNDMtLjQ0LjY1LS42NS43OS0uNzcsMS42My0xLjUxLDIuNDktMi4yMSwxLjEzLS45MSwyLjMyLTEuNzYsMy41Ni0yLjUzLDUuMzgtMy4zMywxMS43Mi01LjI2LDE4LjUyLTUuMjZoMTcuMjFjMS4zNCwwLDIuNjUuMDcsMy45NC4yMi4yNi4wMy41Mi4wNi43Ny4xLjIxLjAzLjQxLjA1LjYyLjA5LDEuNTkuMjQsMy4xNC41OCw0LjY0LDEuMDMuMjQuMDcuNDguMTQuNzIuMjIuNDguMTYuOTcuMzIsMS40My40OS40NS4xNy44OS4zMywxLjMzLjUyLjA3LjAzLjEzLjA1LjIuMDkuMzcuMTYuNzUuMzIsMS4xMi41LjEyLjA0LjI1LjExLjM3LjE4LjMzLjE0LjY1LjMuOTcuNDcuMTMuMDYuMjYuMTIuMzkuMi4zNS4xOC42OS4zNywxLjAzLjU2LjM5LjIyLjc2LjQ1LDEuMTQuNjkuMDUuMDQuMTEuMDYuMTYuMS4zNi4yMy43Mi40NywxLjA3LjcxLjA1LjA0LjExLjA3LjE3LjExLjM4LjI2Ljc1LjU0LDEuMTIuODFoMHMuMDQuMDQuMDYuMDRjLjQuMzEuNzkuNjIsMS4xOC45NC40LjMzLjgxLjY5LDEuMiwxLjA0LjIuMTguNC4zNy42LjU1LjI1LjI0LjQ4LjQ3LjcyLjcuNzEuNzEsMS4zOSwxLjQ1LDIuMDMsMi4yMi40My41MS44NCwxLjA0LDEuMjUsMS41Ny42Ni44OSwxLjI4LDEuODEsMS44NiwyLjc3LjQ0LjczLjg1LDEuNDcsMS4yNCwyLjIzLjY0LDEuMjUsMS4yMSwyLjU1LDEuNzEsMy44OC43OSwyLjE1LDEuMzgsNC40MSwxLjczLDYuNzQuMDcuNDQuMTMuODguMTgsMS4zMi4xNSwxLjMyLjIzLDIuNjcuMjMsNC4wM3YxMDMuNzloLTMyLjA1WiIvPgogICAgPC9nPgogICAgPGcgaWQ9IkNhc2EiPgogICAgICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03MC45LDM1OS4yN2MtNC4zMSwwLTguMy0yLjgxLTkuNTgtNy4xNi0xLjU3LTUuMywxLjQ1LTEwLjg2LDYuNzUtMTIuNDNsNjQwLjItMTg5Ljc0LDY0MS4yLDE4OS43M2M1LjI5LDEuNTcsOC4zMiw3LjEzLDYuNzUsMTIuNDMtMS41Nyw1LjI5LTcuMTMsOC4zMi0xMi40Myw2Ljc1bC02MzUuNTItMTg4LjA1TDczLjc1LDM1OC44NWMtLjk1LjI4LTEuOTEuNDItMi44NS40MloiLz4KICAgICAgPHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMzNi41OCwxMTQzLjI4aC02My4yNHYtNDAuMjdjMC0xMS4wNS04Ljk5LTIwLjA0LTIwLjA0LTIwLjA0aC00Ni44OVY0MTkuNDhoMTAyLjI4YzE0LjM0LDAsMjYsMTEuNjYsMjYsMjZzLTExLjY2LDI2LTI2LDI2LTI2LTExLjY2LTI2LTI2YzAtNS41Mi00LjQ4LTEwLTEwLTEwcy0xMCw0LjQ4LTEwLDEwYzAsMjUuMzYsMjAuNjQsNDYsNDYsNDZzNDYtMjAuNjQsNDYtNDYtMjAuNjQtNDYtNDYtNDZIMTA5Ljc1Yy0yNS4zNiwwLTQ2LDIwLjY0LTQ2LDQ2czIwLjY0LDQ2LDQ2LDQ2LDQ2LTIwLjY0LDQ2LTQ2YzAtNS41Mi00LjQ4LTEwLTEwLTEwcy0xMCw0LjQ4LTEwLDEwYzAsMTQuMzQtMTEuNjYsMjYtMjYsMjZzLTI2LTExLjY2LTI2LTI2LDExLjY2LTI2LDI2LTI2aDEwMC4zOHY2NjMuNDloLTQ1Ljg5Yy0xMS4wNiwwLTIwLjA1LDguOTktMjAuMDUsMjAuMDR2NDAuMjdoLTYzLjI0Yy0xMS4wNSwwLTIwLjA0LDguOTktMjAuMDQsMjAuMDV2NDAuMjJjMCwxMS4wNiw4Ljk5LDIwLjA1LDIwLjA0LDIwLjA1aDEyNTUuNjNjMTEuMDYsMCwyMC4wNS04Ljk5LDIwLjA1LTIwLjA1di00MC4yMmMwLTExLjA2LTguOTktMjAuMDUtMjAuMDUtMjAuMDVaTTExNDcuNDEsNDE5LjQ4aDM5djY2My40OWgtMzlWNDE5LjQ4Wk0yODkuMTMsNDE5LjQ4aDgzOC4yOHY2NjMuNDlIMjg5LjEzVjQxOS40OFpNMjMwLjEzLDQxOS40OGgzOXY2NjMuNDloLTM5VjQxOS40OFpNMTY0LjI0LDExMDIuOTdsMTA4OS4xLjAydi4wMmwtLjA0LDQwLjI3LTEwODkuMTEtLjA0LjA1LTQwLjI3Wk0xMzM2LjYzLDExNjMuMzNsLS4wNSw0MC4yNy0xMjU1LjY3LS4wNS4wNC00MC4yNywxMjU1LjY4LjAzdi4wMloiLz4KICAgIDwvZz4KICA8L2c+Cjwvc3ZnPg==" alt="Domus Investimentos">
+ <img class="logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTG9nb0RvbXVzQ29sb3JfeDVGXzI4Mzk3MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTQxNy41MyAxMzczLjU1Ij4KICA8ZGVmcz4KICAgIDxzdHlsZT4KICAgICAgLmNscy0xIHsKICAgICAgICBmaWxsOiAjMjgzOTcwOwogICAgICB9CiAgICA8L3N0eWxlPgogIDwvZGVmcz4KICA8ZyBpZD0iTG9nb0RvbXVzIj4KICAgIDxnPgogICAgICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0zOTguNDQsNDc3LjQ1aC01Mi4zNnY1NjguNTVoNTIuMzZjMTkuNDEsMCwzNS4xNi0xNS43NSwzNS4xNi0zNS4xNnYtNDk4LjI0YzAtMTkuNDItMTUuNzUtMzUuMTUtMzUuMTYtMzUuMTVaTTQwMC43OCwxMDA0LjI3YzAsNC4xMi0zLjM0LDcuNDctNy40Nyw3LjQ3aC0xNS45NXYtNDk5Ljk4aDE1Ljk1YzQuMTMsMCw3LjQ3LDMuMzQsNy40Nyw3LjQ3djQ4NS4wNFoiLz4KICAgICAgPHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTQzLjg2LDQ3Ny40NWgtMTcuMjFjLTE5LjQyLDAtMzUuMTYsMTUuNzMtMzUuMTYsMzUuMTV2NDk4LjI0YzAsMTkuNDEsMTUuNzQsMzUuMTYsMzUuMTYsMzUuMTZoMTcuMjFjMTkuNDEsMCwzNS4xNS0xNS43NSwzNS4xNS0zNS4xNnYtNDk4LjI0YzAtMTkuNDItMTUuNzQtMzUuMTUtMzUuMTUtMzUuMTVaTTU0Ni45NiwxMDA0LjI3YzAsNC4xMi0zLjM0LDcuNDctNy40Nyw3LjQ3aC04LjQ3Yy00LjEzLDAtNy40OC0zLjM1LTcuNDgtNy40N3YtNDg1LjA0YzAtNC4xMywzLjM1LTcuNDcsNy40OC03LjQ3aDguNDdjNC4xMywwLDcuNDcsMy4zNCw3LjQ3LDcuNDd2NDg1LjA0WiIvPgogICAgICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03NzguNzMsNDc3LjQ1djU2OC41NWgtMzIuMDlWNTExLjc2aC0xNS45NGMtNC4xMywwLTcuNDcsMy4zNC03LjQ3LDcuNDd2NTI2Ljc3aC0yOS45di01MjYuNzdjMC00LjEzLTMuMzQtNy40Ny03LjQ3LTcuNDdoLTE1Ljk0djUzNC4yNGgtMzIuMTFWNDc3LjQ1aDQyLjc4YzEwLjQ2LDAsMjAuMDgsMy41OSwyNy42OSw5LjYsNy42MS02LjAxLDE3LjIzLTkuNiwyNy42OC05LjZoNDIuNzhaIi8+CiAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTkyMS45MSw0NzcuNDV2NTMzLjM5YzAsMTkuNDItMTUuNzQsMzUuMTYtMzUuMTYsMzUuMTZoLTE3LjIxYy0xOS40MiwwLTM1LjE2LTE1Ljc0LTM1LjE2LTM1LjE2VjQ3Ny40NWgzMi4wNXY1MjYuNzljMCw0LjEyLDMuMzUsNy40Nyw3LjQ3LDcuNDdoOC40N2M0LjEyLDAsNy40Ny0zLjM1LDcuNDctNy40N1Y0NzcuNDVoMzIuMDVaIi8+CiAgICAgIDxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTEwMzUuMjcsNjE2LjR2LTk3LjE0YzAtLjQtLjA0LS43OC0uMDktMS4xNy0uMDQtLjIyLS4wOC0uNDQtLjEzLS42Ni0uMDUtLjItLjExLS40LS4xOC0uNiwwLDAsMC0uMDMtLjAyLS4wNC0uMDMtLjEtLjA2LS4xOC0uMS0uMjgsMCwwLDAtLjAyLS4wMi0uMDMtLjAzLS4wOC0uMDYtLjE2LS4xLS4yNCwwLS4wMy0uMDItLjA0LS4wNC0uMDctLjAyLS4wNC0uMDQtLjEtLjA2LS4xNGwtLjA4LS4xNmMtLjA4LS4xNy0uMTctLjMzLS4yNy0uNDktLjA0LS4wNy0uMDktLjE0LS4xMy0uMjEtLjAzLS4wNC0uMDUtLjA5LS4xLS4xMywwLS4wMi0uMDItLjA0LS4wMy0uMDUtLjAzLS4wNC0uMDUtLjA4LS4wOS0uMTIsMC0uMDItLjAzLS4wMy0uMDQtLjA0LS4wNC0uMDUtLjA3LS4xMS0uMTEtLjE2LS4wNC0uMDUtLjA5LS4xMS0uMTMtLjE2LS4wNC0uMDYtLjA5LS4xMS0uMTQtLjE3bC0uMDUtLjA1aDBjLS4wNC0uMDUtLjA5LS4xMS0uMTMtLjE1LDAsMC0uMDItLjAyLS4wMy0uMDItLjAyLS4wNC0uMDQtLjA1LS4wNy0uMDgtLjA0LS4wNC0uMDctLjA4LS4xMS0uMTEtLjA0LS4wNS0uMDctLjA5LS4xMS0uMTItLjA0LS4wNC0uMDktLjA4LS4xMy0uMTEsMC0uMDItLjAzLS4wNC0uMDQtLjA0LS4wMy0uMDQtLjA0LS4wNS0uMDctLjA2LS4wNC0uMDQtLjA2LS4wNy0uMS0uMDl0LS4wMiwwcy0uMDMtLjA0LS4wNC0uMDRjLS4wNi0uMDYtLjEzLS4xMS0uMi0uMTYtLjA4LS4wNy0uMTctLjE0LS4yNS0uMTgtLjA3LS4wNi0uMTQtLjExLS4yMi0uMTctLjEtLjA2LS4yLS4xMi0uMzEtLjE4LS4wOS0uMDYtLjE4LS4xMS0uMjYtLjE3LDAsMC0uMDIsMC0uMDMsMC0uMDktLjA0LS4xOC0uMDktLjI3LS4xMi0uMTEtLjA2LS4yNC0uMTEtLjM2LS4xNy0uMDUtLjAzLS4xMS0uMDQtLjE3LS4wNi0uMDIsMC0uMDQtLjAyLS4wNi0uMDMtLjA0LS4wMi0uMDctLjAzLS4xMS0uMDQtLjExLS4wNC0uMjItLjA4LS4zMy0uMTEsMCwwLS4wMiwwLS4wMywwLS4wNCwwLS4wOC0uMDMtLjExLS4wNC0uMDQsMC0uMDktLjAzLS4xMy0uMDQtLjE2LS4wNC0uMzMtLjA4LS40OS0uMTEtLjAyLDAtLjA0LDAtLjA1LDAtLjEzLS4wMy0uMjctLjA1LS40LS4wNi0uMDYsMC0uMTMtLjAyLS4xOS0uMDMtLjA0LDAtLjA4LDAtLjExLDAtLjAzLDAtLjA0LDAtLjA3LDAtLjE4LDAtLjM2LS4wMi0uNTQtLjAyaC04LjQ3Yy0uODcsMC0xLjcxLjE1LTIuNDkuNDMtLjExLjA0LS4yMi4wOC0uMzMuMTItLjIyLjA5LS40My4xOC0uNjMuMjksMCwwLS4wMi4wMi0uMDMsMC0uMi4xMS0uMzkuMjMtLjU3LjM0LS4wOC4wNS0uMTUuMS0uMjIuMTctLjA5LjA0LS4xNy4xMS0uMjUuMTgtLjA3LjA0LS4xMy4xLS4yLjE2LS4xLjA3LS4xOC4xNS0uMjcuMjQtLjA0LjA0LS4wOS4wNy0uMTMuMTEtLjA0LjA0LS4wOC4wNy0uMTEuMTItLjA0LjAzLS4wOC4wNy0uMTEuMTEtLjAzLjAzLS4wNS4wNC0uMDcuMDgsMCwwLS4wMiwwLS4wMy4wMi0uMDQuMDQtLjA5LjEtLjEzLjE0LS4wNy4wNy0uMTMuMTUtLjE4LjIzLDAsMC0uMDIsMC0uMDIsMC0uMDMuMDItLjA0LjA0LS4wNC4wNWgwczAsLjAyLDAsLjAyYy0uMDMuMDItLjA0LjA0LS4wNS4wNi0uMDUuMDUtLjA5LjEtLjExLjE1LS4wMy4wNC0uMDUuMDYtLjA2LjEtLjAyLDAtLjAzLjAyLS4wMi4wMy0uMDQuMDQtLjA3LjA4LS4wOS4xMi0uMTMuMTYtLjI0LjMzLS4zMi41MS0uMDYuMDktLjExLjE4LS4xNi4yOHQwLC4wMmgwczAsMCwwLDBjLS4wNS4xLS4xMS4yLS4xNS4zMWgwcy0uMDMuMDUtLjA0LjA4Yy0uMDguMTgtLjE2LjM1LS4yMS41NCwwLDAtLjAyLjAzLS4wMi4wNC0uMDYuMTktLjEyLjQtLjE4LjYtLjA1LjIyLS4xLjQ0LS4xMy42Ni0uMDUuMzktLjA5Ljc3LS4wOSwxLjE3djE1Ni44N2MwLDQuMTIsMy4zNCw3LjQ3LDcuNDcsNy40N2gxMi44NGM3LjQ5LDAsMzUuMTUsNC42LDM1LjE1LDU0LjM0djI3Mi45YzAsLjU3LS4wMiwxLjEzLS4wNCwxLjctLjA1LDEuMTMtLjE2LDIuMjMtLjMyLDMuMzMtLjA0LjI3LS4wOC41NC0uMTIuODItLjEuNTItLjE5LDEuMDMtLjMsMS41NC0uMDUuMy0uMTIuNTktLjE5Ljg4LS4xMy41My0uMjYsMS4wNS0uNDIsMS41Ny0uMS4zNC0uMi42OS0uMzMsMS4wMy0uMTMuNDMtLjI4Ljg1LS40NCwxLjI3LS4wOS4yNS0uMTguNTEtLjI4Ljc2LS4zMS44LS42NSwxLjU4LTEuMDMsMi4zNS0uOTksMi4wNi0yLjE3LDMuOTktMy41Miw1Ljc5LS4zNC40Ni0uNjkuOS0xLjA1LDEuMzMtNi40NCw3LjgxLTE2LjIsMTIuOC0yNy4xMiwxMi44aC0xNy4yMWMtMTkuNDIsMC0zNS4xNi0xNS43NC0zNS4xNi0zNS4xNnYtMjA2LjkyaDMyLjA1djIwMC4zNWMwLC4yMiwwLC40Mi4wMy42My4wMi4xNi4wNC4zMi4wNi40NywwLC4xMi4wNC4yNS4wNi4zNy4wNS4yNC4xMS40Ny4xOC43MS4xNC40Ny4zMy45Mi41NiwxLjM0LjExLjIxLjI0LjQyLjM4LjYyLjEzLjIuMjcuNC40My41OC4xMS4xNC4yMi4yNy4zNS40LjEyLjEzLjI1LjI2LjM5LjM4LDEuMzMsMS4yMywzLjA5LDEuOTcsNS4wMywxLjk3aDguNDdjLjIsMCwuNCwwLC42MS0uMDMuMDcsMCwuMTQsMCwuMi0uMDIuMi0uMDIuNC0uMDUuNi0uMDkuMjMtLjA0LjQ2LS4xLjY4LS4xNy4yMi0uMDYuNDMtLjEzLjY0LS4yMi4xNS0uMDUuMjktLjExLjQyLS4xOC4xNC0uMDYuMjYtLjEyLjQtLjIsMCwwLC4wMiwwLC4wMywwLC4xOC0uMS4zNS0uMi41Mi0uMzIuMDgtLjA0LjE1LS4xLjIyLS4xNi4wNi0uMDQuMTItLjA4LjE4LS4xMi4wNi0uMDQuMTItLjA5LjE4LS4xNS4xMS0uMDguMjMtLjE4LjM0LS4yOGgwYy4xMS0uMS4yMi0uMi4zMy0uMzEuMTEtLjExLjItLjIxLjMtLjMzLjE5LS4yMy4zOC0uNDcuNTQtLjcxLjE5LS4yOC4zNy0uNTguNTItLjg5aDBjLjE4LS4zNi4zMy0uNzMuNDQtMS4xMS4wOC0uMjQuMTMtLjQ3LjE4LS43MS4wMy0uMTIuMDUtLjI1LjA2LS4zNy4wMy0uMTYuMDQtLjMyLjA2LS40Ny4wMi0uMjEuMDMtLjQxLjAzLS42M3YtMjc0LjM5YzAtOC00Ljg3LTE0LjYtMTEuOTMtMTQuNmgtOC4zOGMtMTEuNTEsMC0yMS43My01LjUzLTI4LjE0LTE0LjA4LTQuNC01Ljg3LTcuMDEtMTMuMTgtNy4wMS0yMS4wOHYtMTY3LjQ5YzAtMi40My4yNS00LjguNzEtNy4wOC43Mi0zLjUxLDEuOTYtNi44MywzLjYzLTkuODcuNDgtLjg3Ljk5LTEuNzEsMS41NC0yLjUzaDBjMS4yLTEuODEsMi41Ny0zLjQ5LDQuMDYtNS4wMy4yMS0uMjIuNDMtLjQ0LjY1LS42NS43OS0uNzcsMS42My0xLjUxLDIuNDktMi4yMSwxLjEzLS45MSwyLjMyLTEuNzYsMy41Ni0yLjUzLDUuMzgtMy4zMywxMS43Mi01LjI2LDE4LjUyLTUuMjZoMTcuMjFjMS4zNCwwLDIuNjUuMDcsMy45NC4yMi4yNi4wMy41Mi4wNi43Ny4xLjIxLjAzLjQxLjA1LjYyLjA5LDEuNTkuMjQsMy4xNC41OCw0LjY0LDEuMDMuMjQuMDcuNDguMTQuNzIuMjIuNDguMTYuOTcuMzIsMS40My40OS40NS4xNy44OS4zMywxLjMzLjUyLjA3LjAzLjEzLjA1LjIuMDkuMzcuMTYuNzUuMzIsMS4xMi41LjEyLjA0LjI1LjExLjM3LjE4LjMzLjE0LjY1LjMuOTcuNDcuMTMuMDYuMjYuMTIuMzkuMi4zNS4xOC42OS4zNywxLjAzLjU2LjM5LjIyLjc2LjQ1LDEuMTQuNjkuMDUuMDQuMTEuMDYuMTYuMS4zNi4yMy43Mi40NywxLjA3LjcxLjA1LjA0LjExLjA3LjE3LjExLjM4LjI2Ljc1LjU0LDEuMTIuODFoMHMuMDQuMDQuMDYuMDRjLjQuMzEuNzkuNjIsMS4xOC45NC40LjMzLjgxLjY5LDEuMiwxLjA0LjIuMTguNC4zNy42LjU1LjI1LjI0LjQ4LjQ3LjcyLjcuNzEuNzEsMS4zOSwxLjQ1LDIuMDMsMi4yMi40My41MS44NCwxLjA0LDEuMjUsMS41Ny42Ni44OSwxLjI4LDEuODEsMS44NiwyLjc3LjQ0LjczLjg1LDEuNDcsMS4yNCwyLjIzLjY0LDEuMjUsMS4yMSwyLjU1LDEuNzEsMy44OC43OSwyLjE1LDEuMzgsNC40MSwxLjczLDYuNzQuMDcuNDQuMTMuODguMTgsMS4zMi4xNSwxLjMyLjIzLDIuNjcuMjMsNC4wM3YxMDMuNzloLTMyLjA1WiIvPgogICAgPC9nPgogICAgPGcgaWQ9IkNhc2EiPgogICAgICA8cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik03MC45LDM1OS4yN2MtNC4zMSwwLTguMy0yLjgxLTkuNTgtNy4xNi0xLjU3LTUuMywxLjQ1LTEwLjg2LDYuNzUtMTIuNDNsNjQwLjItMTg5Ljc0LDY0MS4yLDE4OS43M2M1LjI5LDEuNTcsOC4zMiw3LjEzLDYuNzUsMTIuNDMtMS41Nyw1LjI5LTcuMTMsOC4zMi0xMi40Myw2Ljc1bC02MzUuNTItMTg4LjA1TDczLjc1LDM1OC44NWMtLjk1LjI4LTEuOTEuNDItMi44NS40MloiLz4KICAgICAgPHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTMzNi41OCwxMTQzLjI4aC02My4yNHYtNDAuMjdjMC0xMS4wNS04Ljk5LTIwLjA0LTIwLjA0LTIwLjA0aC00Ni44OVY0MTkuNDhoMTAyLjI4YzE0LjM0LDAsMjYsMTEuNjYsMjYsMjZzLTExLjY2LDI2LTI2LDI2LTI2LTExLjY2LTI2LTI2YzAtNS41Mi00LjQ4LTEwLTEwLTEwcy0xMCw0LjQ4LTEwLDEwYzAsMjUuMzYsMjAuNjQsNDYsNDYsNDZzNDYtMjAuNjQsNDYtNDYtMjAuNjQtNDYtNDYtNDZIMTA5Ljc1Yy0yNS4zNiwwLTQ2LDIwLjY0LTQ2LDQ2czIwLjY0LDQ2LDQ2LDQ2LDQ2LTIwLjY0LDQ2LTQ2YzAtNS41Mi00LjQ4LTEwLTEwLTEwcy0xMCw0LjQ4LTEwLDEwYzAsMTQuMzQtMTEuNjYsMjYtMjYsMjZzLTI2LTExLjY2LTI2LTI2LDExLjY2LTI2LDI2LTI2aDEwMC4zOHY2NjMuNDloLTQ1Ljg5Yy0xMS4wNiwwLTIwLjA1LDguOTktMjAuMDUsMjAuMDR2NDAuMjdoLTYzLjI0Yy0xMS4wNSwwLTIwLjA0LDguOTktMjAuMDQsMjAuMDV2NDAuMjJjMCwxMS4wNiw4Ljk5LDIwLjA1LDIwLjA0LDIwLjA1aDEyNTUuNjNjMTEuMDYsMCwyMC4wNS04Ljk5LDIwLjA1LTIwLjA1di00MC4yMmMwLTExLjA2LTguOTktMjAuMDUtMjAuMDUtMjAuMDVaTTExNDcuNDEsNDE5LjQ4aDM5djY2My40OWgtMzlWNDE5LjQ4Wk0yODkuMTMsNDE5LjQ4aDgzOC4yOHY2NjMuNDlIMjg5LjEzVjQxOS40OFpNMjMwLjEzLDQxOS40OGgzOXY2NjMuNDloLTM5VjQxOS40OFpNMTY0LjI0LDExMDIuOTdsMTA4OS4xLjAydi4wMmwtLjA0LDQwLjI3LTEwODkuMTEtLjA0LjA1LTQwLjI3Wk0xMzM2LjYzLDExNjMuMzNsLS4wNSw0MC4yNy0xMjU1LjY3LS4wNS4wNC00MC4yNywxMjU1LjY4LjAzdi4wMloiLz4KICAgIDwvZz4KICA8L2c+Cjwvc3ZnPg==" alt="Domus Investimentos" onerror="this.onerror=null;this.src='../ref/DOMUS_svg/LogoDomusColor_HEX-283970.svg'">
  <div class="counter" id="count"></div>
  <div class="btns"><button id="prev" aria-label="Anterior">←</button><button id="play" aria-label="Reproduzir">▶</button><button id="full" aria-label="Tela cheia">⛶</button><button id="next" aria-label="Próximo">→</button></div>
  <div class="ticks" id="ticks"></div>
@@ -608,36 +621,44 @@ let index=0,timer=null,frame=0,auto=false;const SLIDE_MS=7000;
 
 function cleanFichaData(data){
  const source=data&&typeof data==='object'?data:{};
- return {name:String(source.name||'').trim(),city:String(source.city||'').trim(),budgetMin:Number(source.budgetMin)||0,budgetMax:Number(source.budgetMax)||0};
+ return {name:String(source.name||'').trim(),city:String(source.city||'').trim(),neighborhood:String(source.neighborhood||'').trim(),budgetMin:Number(source.budgetMin)||0,budgetMax:Number(source.budgetMax)||0,marketPrice:String(source.marketPrice||'').trim(),marketVariation:String(source.marketVariation||'').trim(),investmentRange:String(source.investmentRange||'').trim()};
 }
 function readFichaData(){try{return cleanFichaData(JSON.parse(sessionStorage.getItem('domus-client-presentation')||'{}'))}catch{return cleanFichaData(null)}}
 function formatBRL(value){return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(value)}
+// Variação em 12 meses (%) e preço médio (R$/m²), informe de novembro de 2025.
+const curitibaMarket=new Map([
+ ['batel',[14.2,18134]],['bigorrilho',[7.5,14282]],['juveve',[13.3,13389]],
+ ['ahu',[12.3,12820]],['agua verde',[9.5,12528]],['cabral',[7.8,12268]],
+ ['centro',[16.1,11001]],['campo comprido',[15.1,10739]],['portao',[9.7,10294]],
+ ['cidade industrial de curitiba',[8.8,8574]],['cic',[8.8,8574]]
+]);
+function marketKey(value){return value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ')}
+function readMarketOverrides(){try{return JSON.parse(sessionStorage.getItem('domus-market-overrides')||'{}')}catch{return {}}}
+function bindEditableFields(){
+ document.querySelectorAll('.editable-field').forEach(el=>el.addEventListener('blur',()=>{
+  const overrides=readMarketOverrides(); overrides[el.id]=el.textContent.trim(); sessionStorage.setItem('domus-market-overrides',JSON.stringify(overrides));
+ }))
+}
 function applyFichaData(raw){
  const data=cleanFichaData(raw),name=data.name,city=data.city;
  $('#client-cover-title').textContent=name?`Planejamento patrimonial: ${name}`:'Planejamento patrimonial: sua jornada';
- $('#client-market-kicker').textContent=city?`Região de interesse · ${city}`:'Região de interesse · a definir';
- const hasPinhaisReference=city.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()==='pinhais';
- const historyValue=$('#market-history-value'),projectionValue=$('#market-projection-value');
- if(hasPinhaisReference){
-  historyValue.dataset.count='8';historyValue.textContent='8';projectionValue.dataset.count='9';projectionValue.textContent='9';
-  $('#market-history-label').textContent='Pinhais · últimos 10 anos';$('#market-history-description').textContent='Valorização média indicada na referência.';
-  $('#market-projection-label').textContent='Pinhais · próximos 10 anos';$('#market-projection-description').textContent='Projeção citada no material, sem garantia.';
-  $('#market-sqm-value').textContent='R$ 3.500–4.500/m²';$('#market-sqm-label').textContent='preço médio informado em Pinhais';
-  $('#market-source-note').textContent='Fonte: pasta de referência (capturas fornecidas). Indicadores de Pinhais; data-base e metodologia não informadas. A projeção de 9% ao ano é reproduzida do material e não é garantia de resultado.';
- }else{
-  historyValue.removeAttribute('data-count');historyValue.textContent='—';projectionValue.removeAttribute('data-count');projectionValue.textContent='—';
-  $('#market-history-label').textContent='Referência regional a confirmar';$('#market-history-description').textContent='Não há indicador validado para a cidade cadastrada.';
-  $('#market-projection-label').textContent='Projeção regional a confirmar';$('#market-projection-description').textContent='Confirme dados e metodologia antes de apresentar projeções.';
-  $('#market-sqm-value').textContent='A confirmar';$('#market-sqm-label').textContent='referência local ainda não cadastrada';
-  $('#market-source-note').textContent=`Cidade informada na ficha: ${city||'não informada'}. Os indicadores disponíveis são específicos de Pinhais e foram ocultados para evitar associá-los a outra região.`;
- }
+ const area=[data.neighborhood,city].filter(Boolean).join(' · ');
+ $('#client-market-kicker').textContent=area||'Região de interesse · a definir';
+ const row=marketKey(city)==='curitiba'?curitibaMarket.get(marketKey(data.neighborhood)):null;
+ $('#market-history-value').textContent=data.marketVariation|| (row?row[0].toLocaleString('pt-BR',{signDisplay:'exceptZero'})+'%':'Indisponível');
+ $('#market-sqm-value').textContent=data.marketPrice?formatBRL(Number(data.marketPrice.replace(/[^0-9,.-]/g,'').replace(',','.'))||0)+'/m²':(row?formatBRL(row[1])+'/m²':'Indisponível');
+ $('#market-source-note').textContent=row?'Preços anunciados de venda residencial.':data.neighborhood?'O informe não traz indicadores para este bairro e cidade.':'Informe o bairro e a cidade na ficha para consultar os indicadores.';
+ $('#market-note').hidden=Boolean(row);
  const budgetMin=data.budgetMin,budgetMax=data.budgetMax;
- let budget='A definir na ficha';
+ let budget=data.investmentRange||'A definir na ficha';
  if(budgetMin>0&&budgetMax>0)budget=`${formatBRL(budgetMin)}–${formatBRL(budgetMax)}`;
  else if(budgetMin>0)budget=`A partir de ${formatBRL(budgetMin)}`;
  else if(budgetMax>0)budget=`Até ${formatBRL(budgetMax)}`;
  $('#client-budget-value').textContent=budget;
+ const overrides=readMarketOverrides();
+ Object.entries(overrides).forEach(([id,value])=>{const element=document.getElementById(id);if(element&&value)element.textContent=value});
 }
+
 applyFichaData(readFichaData());
 
 /* split headline into masked words */

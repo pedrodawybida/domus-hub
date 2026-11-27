@@ -279,6 +279,8 @@ html,body,.stage{background:#ffffff;color:#283970}
  --bot-bar:clamp(68px,11dvh,120px);
 }
 .chrome .logo{left:var(--safe-x);top:clamp(20px,3.4dvh,44px);width:clamp(34px,3vw,52px);height:auto}
+@keyframes brandPulse{0%{opacity:.2;transform:translateY(5px) scale(.92)}60%{opacity:1;transform:translateY(0) scale(1.04)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.stage.house-mode .chrome .logo{animation:brandPulse 1.2s var(--ease) both}
 .counter{right:var(--safe-x);top:clamp(24px,4dvh,48px);font-size:clamp(12px,.9vw,16px)}
 .ticks{left:var(--safe-x);right:var(--safe-x);bottom:clamp(16px,2.8dvh,34px);height:20px}
 .btns{right:var(--safe-x);bottom:clamp(42px,6.4dvh,76px);gap:8px}
@@ -368,17 +370,22 @@ html,body,.stage{background:#ffffff;color:#283970}
 /* Slides 04–10: Left text column strictly separated from Right graphic stage */
 .step .wrap,.overview .wrap,.end .wrap{
  right:auto;
- width:min(38vw,640px);
+ width:min(29vw,480px);
+ padding-top:clamp(34px,4vw,64px);
+ box-sizing:border-box;
  display:flex;
  flex-direction:column;
  justify-content:center;
+}
+.step .wrap{
+ justify-content:flex-start;
 }
 .step .h,.overview .h,.end .h{
  font-size:clamp(32px,4.4vw,76px);
  margin:clamp(6px,1.2dvh,16px) 0 clamp(12px,2dvh,24px);
 }
 .step .sub,.end .sub{max-width:36ch;font-size:clamp(14px,1.2vw,20px)}
-.pips{margin-bottom:clamp(12px,2dvh,24px)}
+.step .pips{margin-top:clamp(32px,3vw,52px);margin-bottom:clamp(12px,2dvh,24px)}
 .opts{gap:clamp(10px,1.5dvh,20px);margin-top:clamp(4px,.8dvh,12px)}
 .opt b{font-size:clamp(16px,1.35vw,22px);color:#283970}
 .opt span{font-size:clamp(13px,1vw,17px)}
@@ -400,9 +407,9 @@ html,body,.stage{background:#ffffff;color:#283970}
 
 /* World SVG restricted to right half on step slides so it NEVER overlaps left text */
 .world{
- left:46vw;
+ left:52vw;
  top:var(--top-bar);
- width:calc(54vw - var(--safe-x));
+ width:calc(48vw - var(--safe-x));
  height:calc(100dvh - var(--top-bar) - var(--bot-bar));
 }
 
@@ -418,6 +425,14 @@ html,body,.stage{background:#ffffff;color:#283970}
 .arch path,.arch line,.arch rect,.arch .win-glow{stroke:rgba(40,57,112,.82)}
 .arch .win-glow,.world.house-only .arch .win-glow{fill:rgba(40,57,112,.08)}
 
+.mkt .wrap{padding:0;align-content:center;grid-template-rows:auto auto auto;gap:clamp(10px,3vh,32px);overflow:auto;overflow-wrap:anywhere}
+.mkt .curve{display:none}
+.market-data{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1em;margin:0}
+.market-data div{border-left:2px solid #bcc4d8;padding-left:1em}
+.market-data dt,.market-note{font:400 clamp(15px,1.35vw,22px)/1.3 var(--sans);margin:0}
+.market-data dd{font:600 clamp(19px,2vw,32px)/1.16 var(--sans);margin:.25em 0 0}
+.market-note a{color:inherit}
+@media(max-width:600px){.market-data{grid-template-columns:1fr;gap:.65em}.mkt .wrap{align-content:safe center}}
 </style>
 </head>
 <body>
@@ -504,14 +519,12 @@ html,body,.stage{background:#ffffff;color:#283970}
    <p class="kicker fx" style="--base:.2s" id="client-market-kicker">Região de interesse · a definir</p>
    <h2 class="h" data-split style="--base:.35s">Conheça o cenário. Decida no seu tempo.</h2>
   </div>
-  <div class="stats">
-   <div class="stat fx" style="--base:.8s"><div class="big"><span data-count="8" id="market-history-value">8</span><sup>%</sup></div><p class="cap" id="market-history-label">Pinhais · últimos 10 anos</p><p id="market-history-description">Valorização média indicada na referência.</p></div>
-   <div class="stat future fx" style="--base:1.2s"><div class="big"><span data-count="9" id="market-projection-value">9</span><sup>%</sup><small>/ ano</small></div><p class="cap" id="market-projection-label">Pinhais · próximos 10 anos</p><p id="market-projection-description">Projeção citada no material, sem garantia.</p></div>
-  </div>
-  <div class="mkt-foot">
-   <div class="facts fx" style="--base:2s"><div><b id="market-sqm-value">R$ 3.500–4.500/m²</b><span id="market-sqm-label">preço médio informado em Pinhais</span></div><div><b id="client-budget-value">A definir na ficha</b><span>faixa de investimento do cliente</span></div></div>
-   <p class="caveat fx" style="--base:2.4s" id="market-source-note">Fonte: pasta de referência (capturas fornecidas). Indicadores de Pinhais; data-base e metodologia não informadas. A projeção de 9% ao ano é reproduzida do material e não é garantia de resultado.</p>
-  </div>
+  <dl class="market-data">
+   <div><dt>Variação em 12 meses</dt><dd id="market-history-value">Indisponível</dd></div>
+   <div><dt>Preço médio anunciado</dt><dd id="market-sqm-value">Indisponível</dd></div>
+   <div><dt>Faixa de investimento</dt><dd id="client-budget-value">A definir na ficha</dd></div>
+  </dl>
+  <p class="market-note" id="market-note"><span id="market-source-note"></span> <a href="https://www.datazap.com.br/wp-content/uploads/2025/12/fipezap-202511-residencial-venda.pdf" target="_blank" rel="noreferrer">Informe FipeZAP · novembro de 2025</a></p>
  </div>
 </section>
 
@@ -594,7 +607,7 @@ html,body,.stage{background:#ffffff;color:#283970}
 </section>
 
 <div class="chrome">
- <img class="logo" src="@@LOGO@@" alt="Domus Investimentos">
+ <img class="logo" src="@@LOGO@@" alt="Domus Investimentos" onerror="this.onerror=null;this.src='../ref/DOMUS_svg/LogoDomusColor_HEX-283970.svg'">
  <div class="counter" id="count"></div>
  <div class="btns"><button id="prev" aria-label="Anterior">←</button><button id="play" aria-label="Reproduzir">▶</button><button id="full" aria-label="Tela cheia">⛶</button><button id="next" aria-label="Próximo">→</button></div>
  <div class="ticks" id="ticks"></div>
@@ -608,29 +621,28 @@ let index=0,timer=null,frame=0,auto=false;const SLIDE_MS=7000;
 
 function cleanFichaData(data){
  const source=data&&typeof data==='object'?data:{};
- return {name:String(source.name||'').trim(),city:String(source.city||'').trim(),budgetMin:Number(source.budgetMin)||0,budgetMax:Number(source.budgetMax)||0};
+ return {name:String(source.name||'').trim(),city:String(source.city||'').trim(),neighborhood:String(source.neighborhood||'').trim(),budgetMin:Number(source.budgetMin)||0,budgetMax:Number(source.budgetMax)||0};
 }
 function readFichaData(){try{return cleanFichaData(JSON.parse(sessionStorage.getItem('domus-client-presentation')||'{}'))}catch{return cleanFichaData(null)}}
 function formatBRL(value){return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(value)}
+// Variação em 12 meses (%) e preço médio (R$/m²), informe de novembro de 2025.
+const curitibaMarket=new Map([
+ ['batel',[14.2,18134]],['bigorrilho',[7.5,14282]],['juveve',[13.3,13389]],
+ ['ahu',[12.3,12820]],['agua verde',[9.5,12528]],['cabral',[7.8,12268]],
+ ['centro',[16.1,11001]],['campo comprido',[15.1,10739]],['portao',[9.7,10294]],
+ ['cidade industrial de curitiba',[8.8,8574]],['cic',[8.8,8574]]
+]);
+function marketKey(value){return value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ')}
 function applyFichaData(raw){
  const data=cleanFichaData(raw),name=data.name,city=data.city;
  $('#client-cover-title').textContent=name?`Planejamento patrimonial: ${name}`:'Planejamento patrimonial: sua jornada';
- $('#client-market-kicker').textContent=city?`Região de interesse · ${city}`:'Região de interesse · a definir';
- const hasPinhaisReference=city.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()==='pinhais';
- const historyValue=$('#market-history-value'),projectionValue=$('#market-projection-value');
- if(hasPinhaisReference){
-  historyValue.dataset.count='8';historyValue.textContent='8';projectionValue.dataset.count='9';projectionValue.textContent='9';
-  $('#market-history-label').textContent='Pinhais · últimos 10 anos';$('#market-history-description').textContent='Valorização média indicada na referência.';
-  $('#market-projection-label').textContent='Pinhais · próximos 10 anos';$('#market-projection-description').textContent='Projeção citada no material, sem garantia.';
-  $('#market-sqm-value').textContent='R$ 3.500–4.500/m²';$('#market-sqm-label').textContent='preço médio informado em Pinhais';
-  $('#market-source-note').textContent='Fonte: pasta de referência (capturas fornecidas). Indicadores de Pinhais; data-base e metodologia não informadas. A projeção de 9% ao ano é reproduzida do material e não é garantia de resultado.';
- }else{
-  historyValue.removeAttribute('data-count');historyValue.textContent='—';projectionValue.removeAttribute('data-count');projectionValue.textContent='—';
-  $('#market-history-label').textContent='Referência regional a confirmar';$('#market-history-description').textContent='Não há indicador validado para a cidade cadastrada.';
-  $('#market-projection-label').textContent='Projeção regional a confirmar';$('#market-projection-description').textContent='Confirme dados e metodologia antes de apresentar projeções.';
-  $('#market-sqm-value').textContent='A confirmar';$('#market-sqm-label').textContent='referência local ainda não cadastrada';
-  $('#market-source-note').textContent=`Cidade informada na ficha: ${city||'não informada'}. Os indicadores disponíveis são específicos de Pinhais e foram ocultados para evitar associá-los a outra região.`;
- }
+ const area=[data.neighborhood,city].filter(Boolean).join(' · ');
+ $('#client-market-kicker').textContent=area||'Região de interesse · a definir';
+ const row=marketKey(city)==='curitiba'?curitibaMarket.get(marketKey(data.neighborhood)):null;
+ $('#market-history-value').textContent=row?row[0].toLocaleString('pt-BR',{signDisplay:'exceptZero'})+'%':'Indisponível';
+ $('#market-sqm-value').textContent=row?formatBRL(row[1])+'/m²':'Indisponível';
+ $('#market-source-note').textContent=row?'Preços anunciados de venda residencial.':data.neighborhood?'O informe não traz indicadores para este bairro e cidade.':'Informe o bairro e a cidade na ficha para consultar os indicadores.';
+ $('#market-note').hidden=Boolean(row);
  const budgetMin=data.budgetMin,budgetMax=data.budgetMax;
  let budget='A definir na ficha';
  if(budgetMin>0&&budgetMax>0)budget=`${formatBRL(budgetMin)}–${formatBRL(budgetMax)}`;

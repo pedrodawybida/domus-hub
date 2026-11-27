@@ -8,6 +8,15 @@ export async function POST(request: Request) {
   if (typeof data?.username !== "string" || typeof data?.password !== "string") {
     return new Response(null, { status: 400 });
   }
+  if (process.env.NODE_ENV === "development") {
+    return new Response(null, {
+      status: 204,
+      headers: {
+        "Set-Cookie": "crm_token=local-demo; Path=/; HttpOnly; SameSite=Lax",
+        "Cache-Control": "no-store",
+      },
+    });
+  }
   try {
     const base = process.env.CRM_INTERNAL_URL || crmUrl;
     const response = await fetch(new URL("api/hub/login", base.replace(/\/?$/, "/")), {
