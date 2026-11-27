@@ -433,7 +433,7 @@ html,body,.stage{background:#ffffff;color:#283970}
 .market-data dd{font:600 clamp(19px,2vw,32px)/1.16 var(--sans);margin:.25em 0 0}
 .market-note a{color:inherit}
 @media(max-width:600px){.market-data{grid-template-columns:1fr;gap:.65em}.mkt .wrap{align-content:safe center}}
-.editable-field{cursor:text;border-radius:.25em;outline:0;transition:box-shadow .2s ease,background .2s ease}.editable-field:hover,.editable-field:focus{background:rgba(40,57,112,.06);box-shadow:0 0 0 .18em rgba(40,57,112,.12)}#client-cover-title,#client-cover-title .w,#client-cover-title .wi{color:#8ed2d0;-webkit-text-fill-color:#8ed2d0}</style>
+.editable-field{cursor:text;border-radius:.25em;outline:0;transition:box-shadow .2s ease,background .2s ease}.editable-field:hover,.editable-field:focus{background:rgba(40,57,112,.06);box-shadow:0 0 0 .18em rgba(40,57,112,.12)}#cover-name,#cover-name .wi{color:#8ed2d0;-webkit-text-fill-color:#8ed2d0}</style>
 </head>
 <body>
 <button class="platform-back" type="button" onclick="if(window.parent!==window){window.parent.postMessage({type:'domus-back-to-central'},location.origin)}else if(history.length>1){history.back()}else{location.href=location.protocol==='file:'?'../../apresentacao-interativa.html':'/'}">← Central de Apresentações</button>
@@ -473,7 +473,7 @@ html,body,.stage{background:#ffffff;color:#283970}
  <div class="wrap">
   <div>
    <p class="kicker fx" style="--i:0;--base:.2s">Domus Investimentos</p>
-   <h1 class="h" data-split style="--base:.5s" id="client-cover-title">Planejamento patrimonial: sua jornada</h1>
+   <h1 class="h" data-split style="--base:.5s" id="client-cover-title">Planejamento patrimonial: <span id="cover-name">sua jornada</span></h1>
    <p class="sub fx" style="--i:0;--base:1.5s">A Domus escuta o seu momento e orienta cada decisão, para você avançar com clareza e confiança.</p>
   </div>
   <svg class="cover-art" viewBox="0 0 440 340" aria-hidden="true">
@@ -621,7 +621,7 @@ let index=0,timer=null,frame=0,auto=false;const SLIDE_MS=7000;
 
 function cleanFichaData(data){
  const source=data&&typeof data==='object'?data:{};
- return {name:String(source.name||'').trim(),city:String(source.city||'').trim(),neighborhood:String(source.neighborhood||'').trim(),budgetMin:Number(source.budgetMin)||0,budgetMax:Number(source.budgetMax)||0,marketPrice:String(source.marketPrice||'').trim(),marketVariation:String(source.marketVariation||'').trim(),investmentRange:String(source.investmentRange||'').trim()};
+ return {name:String(source.name||'').trim(),city:String(source.city||'').trim(),neighborhood:String(source.neighborhood||'').trim(),budgetMin:Number(source.budgetMin)||0,budgetMax:Number(source.budgetMax)||0,marketReference:String(source.marketReference||''),marketPrice:String(source.marketPrice||'').trim(),marketVariation:String(source.marketVariation||'').trim(),investmentRange:String(source.investmentRange||'').trim()};
 }
 function readFichaData(){try{return cleanFichaData(JSON.parse(sessionStorage.getItem('domus-client-presentation')||'{}'))}catch{return cleanFichaData(null)}}
 function formatBRL(value){return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(value)}
@@ -633,30 +633,24 @@ const curitibaMarket=new Map([
  ['cidade industrial de curitiba',[8.8,8574]],['cic',[8.8,8574]]
 ]);
 function marketKey(value){return value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ')}
-function readMarketOverrides(){try{return JSON.parse(sessionStorage.getItem('domus-market-overrides')||'{}')}catch{return {}}}
-function bindEditableFields(){
- document.querySelectorAll('.editable-field').forEach(el=>el.addEventListener('blur',()=>{
-  const overrides=readMarketOverrides(); overrides[el.id]=el.textContent.trim(); sessionStorage.setItem('domus-market-overrides',JSON.stringify(overrides));
- }))
-}
 function applyFichaData(raw){
  const data=cleanFichaData(raw),name=data.name,city=data.city;
- $('#client-cover-title').textContent=name?`Planejamento patrimonial: ${name}`:'Planejamento patrimonial: sua jornada';
+ $('#cover-name').textContent=name||'sua jornada';
  const area=[data.neighborhood,city].filter(Boolean).join(' · ');
  $('#client-market-kicker').textContent=area||'Região de interesse · a definir';
  const row=marketKey(city)==='curitiba'?curitibaMarket.get(marketKey(data.neighborhood)):null;
- $('#market-history-value').textContent=data.marketVariation|| (row?row[0].toLocaleString('pt-BR',{signDisplay:'exceptZero'})+'%':'Indisponível');
- $('#market-sqm-value').textContent=data.marketPrice?formatBRL(Number(data.marketPrice.replace(/[^0-9,.-]/g,'').replace(',','.'))||0)+'/m²':(row?formatBRL(row[1])+'/m²':'Indisponível');
+ $('#market-history-value').textContent=data.marketVariation!==''?Number(data.marketVariation).toLocaleString('pt-BR')+'%':(!data.marketReference&&row?row[0].toLocaleString('pt-BR',{signDisplay:'exceptZero'})+'%':'Indisponível');
+ $('#market-sqm-value').textContent=data.marketPrice?formatBRL(Number(data.marketPrice.replace(/[^0-9,.-]/g,'').replace(',','.'))||0)+'/m²':(!data.marketReference&&row?formatBRL(row[1])+'/m²':'Indisponível');
  $('#market-source-note').textContent=row?'Preços anunciados de venda residencial.':data.neighborhood?'O informe não traz indicadores para este bairro e cidade.':'Informe o bairro e a cidade na ficha para consultar os indicadores.';
- $('#market-note').hidden=Boolean(row);
+ if(data.marketReference){$('#market-source-note').textContent=data.marketReference; $('#market-note a').hidden=true;}
+ $('#market-note').hidden=!data.marketReference&&Boolean(row);
  const budgetMin=data.budgetMin,budgetMax=data.budgetMax;
  let budget=data.investmentRange||'A definir na ficha';
  if(budgetMin>0&&budgetMax>0)budget=`${formatBRL(budgetMin)}–${formatBRL(budgetMax)}`;
  else if(budgetMin>0)budget=`A partir de ${formatBRL(budgetMin)}`;
  else if(budgetMax>0)budget=`Até ${formatBRL(budgetMax)}`;
  $('#client-budget-value').textContent=budget;
- const overrides=readMarketOverrides();
- Object.entries(overrides).forEach(([id,value])=>{const element=document.getElementById(id);if(element&&value)element.textContent=value});
+
 }
 
 applyFichaData(readFichaData());
