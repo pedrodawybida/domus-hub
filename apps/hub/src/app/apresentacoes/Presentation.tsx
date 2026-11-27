@@ -42,6 +42,9 @@ export default function CentralApresentacoesPage() {
             <a className={styles.row} href="/slides/Ficha.html">
               <div><h3>Domus Ficha</h3><p>Registre o perfil e as preferências do cliente.</p></div><ArrowUpRight size={18} />
             </a>
+            <a className={styles.row} href="/slides/Ficha.html#archive">
+              <div><h3>Fichas salvas</h3><p>Consulte por nome e imprima a ficha do cliente.</p></div><ArrowUpRight size={18} />
+            </a>
             <a className={styles.row} href="/slides/Simulador.html">
               <div><h3>Simulador de Financiamento &amp; Crédito</h3><p>Compare parcelas SAC e PRICE e simule cenários de crédito.</p></div><ArrowUpRight size={18} />
             </a>

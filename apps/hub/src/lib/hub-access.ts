@@ -13,7 +13,7 @@ export async function getHubUser() {
   });
   if (response.status === 401) return null;
   if (!response.ok) throw new Error("CRM indisponível para validar o acesso.");
-  return await response.json() as { name: string; role: string; canPresent: boolean };
+  return await response.json() as { id: string; name: string; role: string; canPresent: boolean };
 }
 
 export async function requirePresentation() {
