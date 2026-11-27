@@ -370,7 +370,7 @@
     .ficha-message.visible { display: block; }
     .ficha-message button { margin-left: 8px; color: #065f46; font-weight: 800; text-decoration: underline; background: none; border: 0; cursor: pointer; }
     @media (max-width: 600px) { .ficha-grid { grid-template-columns: 1fr; } .ficha-wide { grid-column: auto; } .ficha-section, .ficha-intro { padding: 20px; } .ficha-actions { flex-direction: column-reverse; } .ficha-actions button { width: 100%; } }
-    @media print { body * { visibility: hidden !important; } #screen-ficha, #screen-ficha * { visibility: visible !important; } #screen-ficha { position: absolute; inset: 0; min-height: auto; } #screen-ficha .light-header, #screen-ficha .ficha-actions, #screen-ficha .ficha-message { display: none !important; } .ficha-shell { max-width: none; padding: 0; } .ficha-section, .ficha-intro { box-shadow: none; break-inside: avoid; } }
+    @media print { #archive { display:none } body * { visibility: hidden !important; } #screen-ficha, #screen-ficha * { visibility: visible !important; } #screen-ficha { position: absolute; inset: 0; min-height: auto; } #screen-ficha .light-header, #screen-ficha .ficha-actions, #screen-ficha .ficha-message { display: none !important; } .ficha-shell { max-width: none; padding: 0; } .ficha-section, .ficha-intro { box-shadow: none; break-inside: avoid; } }
 </style></head><body><svg style="display:none;">
     <symbol id="domus-logo-symbol" viewBox="0 0 1417.53 1373.55">
       <path fill="currentColor" d="M398.44,477.45h-52.36v568.55h52.36c19.41,0,35.16-15.75,35.16-35.16v-498.24c0-19.42-15.75-35.15-35.16-35.15ZM400.78,1004.27c0,4.12-3.34,7.47-7.47,7.47h-15.95v-499.98h15.95c4.13,0,7.47,3.34,7.47,7.47v485.04Z"/>
@@ -400,6 +400,10 @@
         <p>A Domus Ficha reúne, em um só lugar, os dados essenciais do cliente e os critérios para a busca imobiliária. Ela ajuda o consultor a entender o contexto, registrar preferências e conduzir uma seleção de imóveis alinhada ao que a pessoa realmente precisa.</p>
       </div>
 
+      <details id="archive"><summary>Fichas salvas</summary>
+        <label>Buscar por nome <input id="archive-search" type="search"></label>
+        <button type="button" id="archive-find">Buscar</button><ul id="archive-list"></ul>
+      </details>
       <form id="domus-ficha-form">
         <section class="ficha-section" aria-labelledby="ficha-dados-title">
           <div class="ficha-section-heading">
@@ -532,7 +536,7 @@
     ["ficha-renda", "ficha-preco-min", "ficha-preco-max", "ficha-condominio", "ficha-iptu"].forEach(id => {
       document.getElementById(id).addEventListener("blur", event => formatFichaMoney(event.target));
     });
-    document.getElementById("domus-ficha-form").addEventListener("submit", event => {
+    document.getElementById("domus-ficha-form").addEventListener("submit", async event => {
       event.preventDefault();
       const form = event.currentTarget;
       const areaMin = Number(form.elements.areaMin.value || 0);
@@ -545,6 +549,23 @@
       form.elements.areaMax.setCustomValidity("");
       const name = form.elements.nome.value.trim();
       const amenities = [...form.querySelectorAll('input[name="comodidades"]:checked')].map(input => input.value);
+      const submit = form.querySelector('[type="submit"]');
+      if (submit.disabled) return;
+      submit.disabled = true;
+      const savedFields = Object.fromEntries(new FormData(form));
+      savedFields.comodidades = amenities;
+      savedFields.marketReference = reference.textContent;
+      try {
+        const response = await fetch("/api/fichas", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(savedFields) });
+        if (!response.ok) throw Error();
+      } catch {
+        const status = document.getElementById("ficha-success");
+        status.textContent = "Não foi possível salvar. Os campos continuam preenchidos para tentar novamente.";
+        status.classList.add("visible");
+        submit.disabled = false;
+        return;
+      }
+      form.addEventListener("input", () => { submit.disabled = false; }, {once:true});
       const clientPresentation = {
         name,
         city: form.elements.cidade.value,
@@ -560,7 +581,7 @@
       const result = document.getElementById("ficha-success");
       result.replaceChildren();
       const message = document.createElement("span");
-      message.textContent = `Ficha de ${name} criada nesta sessão${amenities.length ? `, com ${amenities.length} comodidade(s) selecionada(s)` : ""}. Nome, cidade e faixa de investimento ficam temporariamente nesta sessão para personalizar a apresentação; não são enviados a terceiros nem guardados em uma conta.`;
+      message.textContent = `Ficha de ${name} salva no arquivo.`;
       const printButton = document.createElement("button");
       printButton.type = "button";
       printButton.textContent = "Imprimir ficha";
@@ -570,4 +591,46 @@
       result.scrollIntoView({ behavior: "smooth", block: "center" });
     });
 
+
+    async function listArchive() {
+      const list = document.getElementById("archive-list");
+      try {
+        const response = await fetch("/api/fichas?q=" + encodeURIComponent(document.getElementById("archive-search").value));
+        if (!response.ok) throw Error();
+        const records = await response.json();
+        list.replaceChildren();
+        for (const record of records) {
+          const link = document.createElement("a");
+          link.href = "?ficha=" + encodeURIComponent(record.id);
+          link.textContent = record.name + " · " + record.consultant + " · " + new Date(record.date).toLocaleString("pt-BR");
+          const item = document.createElement("li");
+          item.append(link);
+          list.append(item);
+        }
+        if (!records.length) list.textContent = "Nenhuma ficha encontrada.";
+      } catch { list.textContent = "Não foi possível consultar o arquivo."; }
+    }
+    document.getElementById("archive-find").onclick = listArchive;
+    document.getElementById("archive").ontoggle = event => { if (event.target.open) listArchive(); };
+    if (location.hash === "#archive") document.getElementById("archive").open = true;
+    const archivedId = new URLSearchParams(location.search).get("ficha");
+    if (archivedId) {
+      const form = document.getElementById("domus-ficha-form");
+      const actions = form.querySelector(".ficha-actions");
+      actions.replaceChildren();
+      for (const field of form.elements) field.disabled = true;
+      fetch("/api/fichas?id=" + encodeURIComponent(archivedId)).then(async response => {
+        if (!response.ok) throw Error();
+        const data = await response.json();
+        for (const field of form.elements) {
+          if (field.type === "checkbox") field.checked = (data.comodidades || []).includes(field.value);
+          else if (field.name) field.value = data[field.name] || "";
+        }
+        reference.textContent = data.marketReference || "";
+        const print = document.createElement("button");
+        print.type = "button"; print.className = "btn-primary"; print.textContent = "Imprimir ou salvar PDF";
+        print.onclick = () => window.print();
+        actions.append(print);
+      }).catch(() => { actions.textContent = "Ficha indisponível para esta conta."; });
+    }
 </script></body></html>
