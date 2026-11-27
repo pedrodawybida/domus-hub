@@ -1,0 +1,17 @@
+.back { display: inline-flex; align-items: center; gap: .5rem; font-size: .88rem; }
+.back:hover { text-decoration: underline; }
+.cover { min-height: 215px; padding-block: 28px; }
+.cover h1 { font-size: clamp(3rem, 5.4vw, 5rem); }
+.columns { display: grid; grid-template-columns: 1.28fr 1fr; gap: clamp(24px, 5vw, 72px); margin-top: 32px; }
+.heading { font: 700 2rem/1.1 "Domus Display", sans-serif; margin: 0 0 12px; }
+.tools { background: white; border: 1px solid #d7dae1; border-radius: 6px; padding: 22px 26px 6px; align-self: start; }
+.row { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; text-align: left; border-top: 1px solid #d7dae1; padding: 18px 0; cursor: pointer; }
+.row svg { flex: none; }
+.row h3 { font-size: 1.05rem; font-weight: 650; }
+.row:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
+.row p { margin-top: 4px; color: #525b6b; font-size: .9rem; line-height: 1.5; }
+@media (max-width: 760px) {
+  .columns { grid-template-columns: 1fr; gap: 24px; margin-top: 24px; }
+  .cover { min-height: 175px; }
+  .tools { padding-inline: 18px; }
+}
